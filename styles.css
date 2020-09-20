@@ -148,7 +148,6 @@ header:before{
 	height: 60px;
 	left: 12px;
 	margin-bottom: 10px;
-	overflow-x: hidden;
 }
 .scale .major{
 	width: 2px;
@@ -338,7 +337,7 @@ header:before{
 	border-color: rgb(0,0,0,0.7);
 }
 .step_divider:first-of-type .add_step{
-	transform: translateX(10px);
+	transform: translateX(13px);
 }
 
 .joint_empty .step_divider:first-of-type .add_step{
