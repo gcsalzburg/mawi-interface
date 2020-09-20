@@ -1,13 +1,60 @@
 <!doctype html>
 
 <head>
-    <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="styles.css">
+	<title>MAWI Control</title>
 </head>
 <body>
-    
-    <button id="butConnect" type="button">Connect</button>
-    <pre id="log"></pre>
+	<header class="container_width">
+		<h1>MAWI Control</h1>
+		<div id="connection status" class="connection_status">Connected to MAWI1</div>
+	</header>
+	<main class="container_width">
+		<section class="main_nav">
+			<nav id="sq_nav" class="sq_nav">
+				<a id="sq1" href="#" class="sq_current">Pickup 1</a>
+				<a id="sq2" href="#">Pickup 2</a>
+				<a id="sq3" href="#">Drop fast</a>
+				<a id="add" href="#" class="sq_add">+</a>
+			</nav>
+			<nav id="control_nav" class="control_nav">
+				<a id="upload" href="#" class="upload_and_run">Upload & Run</a>
+			</nav>
+		</section>
 
-    <script src="scripts.js"></script>
+		<section class="joints">
+			<div class="scale"></div>
+
+			<div id="neck" class="joint">
+				<h2>Neck</h2>
+				<div class="joint_steps">
+					<div id="neck_step1" class="step"></div>
+					<div id="neck_step2" class="step"></div>
+				</div>
+			</div>
+
+			<div id="neck" class="joint">
+				<h2>Elbow</h2>
+				<div class="joint_steps">
+					<div id="neck_step1" class="step"></div>
+					<div id="neck_step2" class="step"></div>
+				</div>
+			</div>
+
+			<div id="neck" class="joint">
+				<h2>SHoulder</h2>
+				<div class="joint_steps">
+					<div id="neck_step1" class="step"></div>
+					<div id="neck_step2" class="step"></div>
+				</div>
+			</div>
+
+		</section>
+	</main>
+<!--	
+	<button id="butConnect" type="button">Connect</button>
+	<pre id="log"></pre>
+
+	<script src="scripts.js"></script> -->
 </body>
 </html>
