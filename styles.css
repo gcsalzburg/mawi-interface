@@ -166,6 +166,15 @@ header:before{
 	position:relative;
 	width: 3000px;
 }
+.scale .scale_dragger{
+	position: absolute;
+	left: 0;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	display: block;
+	z-index: 10000;
+}
 .scale .major{
 	width: 2px;
 	background: var(--mawi-mid-grey);

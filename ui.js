@@ -236,28 +236,29 @@ document.onmousedown = function(event){
 			document.onmouseup = null;
 			format_joints();
 		};
-	}else if(_e.classList.contains("scale")){ // TODO: Allow dragging on the check markers and the numbers as well
+	}else if(_e.classList.contains("scale_dragger")){ // TODO: Allow dragging on the check markers and the numbers as well
 		// Dragging the scale
-		_e.classList.add("is_dragging");
+		_f = _e.parentNode;
+		_f.classList.add("is_dragging");
 
 		const drag_data = {
 			start_x: event.pageX
 		};
 		function onScaleDrag(event){
-			_new_x = _e.dataset.offset - (drag_data.start_x - event.pageX);
+			_new_x = _f.dataset.offset - (drag_data.start_x - event.pageX);
 			if(_new_x > 0){
 				_new_x = 0;
 			}
-			_e.style.transform = `translateX(${_new_x}px`;
-			_e.dataset.new_offset = _new_x;
+			_f.style.transform = `translateX(${_new_x}px`;
+			_f.dataset.new_offset = _new_x;
 			update_step_offsets(_new_x);
 		}
 		document.addEventListener('mousemove', onScaleDrag);
 
 		// Remove un-needed handlers on release
 		document.onmouseup = function() {
-			_e.classList.remove("is_dragging");
-			_e.dataset.offset = _e.dataset.new_offset;
+			_f.classList.remove("is_dragging");
+			_f.dataset.offset = _f.dataset.new_offset;
 			document.removeEventListener('mousemove', onScaleDrag);
 			document.onmouseup = null;
 			format_joints();
