@@ -11,6 +11,7 @@
 	--mawi-pink: rgb(231,167,168);
 	--mawi-orange: rgb(247,171,24);
 	--mawi-red: rgb(235,90,97);
+	--mawi-deeper-red: rgb(357,78,52);
 	--mawi-blue: rgb(33,88,165);
 
 	--mawi-light-grey-outline: rgb(245,245,245);
@@ -27,10 +28,19 @@
 html,body {
   color: #444;
   font-family: 'Verdana', sans-serif;
+  font-family: 'Open Sans', sans-serif;
   margin:0;
   padding:0;
   overflow-x: hidden;
   cursor: default;
+}
+body{
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .container_width{
@@ -44,7 +54,8 @@ header{
 	position:relative;
 	height: var(--header-height);
 	color: white;
-	font-family: "Raleway ExtraBold";
+	font-family: 'Raleway', sans-serif;
+	font-weight: 900;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -96,6 +107,7 @@ header:before{
 }
 .sq_nav a, .control_nav a{
 	font-family: "Raleway";
+	font-weight: 500;
 	font-size: 1.1em;
 	color: white;
 	background-color: var(--mawi-dark-70);
@@ -143,11 +155,16 @@ header:before{
 }
 
 
-.scale{
+.scale_container{
 	position:relative;
+	overflow:hidden;
+}
+.scale{
 	height: 60px;
 	left: 12px;
 	margin-bottom: 10px;
+	position:relative;
+	width: 3000px;
 }
 .scale .major{
 	width: 2px;
@@ -161,6 +178,7 @@ header:before{
 .scale .major:before{
 	content: attr(data-value);
 	font-family: "Open Sans";
+	font-weight: 300;
 	font-size: 0.8em;
 	position: relative;
 	top: -18px;
@@ -179,6 +197,18 @@ header:before{
 	bottom: 4px;
 	transform: translateX(-1px);
 }
+.scale:hover .major, .scale:hover .minor{
+	background: rgba(0,0,0,0.7);
+}
+.scale:hover .major:before{
+	color: rgba(0,0,0,0.7);
+}
+.scale.is_dragging .major, .scale.is_dragging .minor{
+	background: var(--mawi-green);
+}
+.scale.is_dragging .major:before{
+	color: var(--mawi-green);
+}
 
 
 
@@ -192,8 +222,8 @@ header:before{
 }
 .joint h2{
 	position: absolute;
-	font-family: "Raleway ExtraBold";
-	font-weight: normal;
+	font-family: "Raleway";
+	font-weight: 800;
 	text-transform: uppercase;
 	width: var(--joint-col-width);
 	left: calc(0px - var(--joint-col-width));
@@ -225,17 +255,20 @@ header:before{
 	border-radius: 10px;
 }
 .step{
-	min-width: 150px;
+	min-width: 50px;
 	height: var(--joint-height);
 	background-color: rgb(220,220,220);
 	border-radius: 12px;
-	font-family: "Open Sans SemiBold", sans-serif;
+	font-family: "Open Sans";
+	font-weight: 600;
 	color: white;
 	display: flex;
 	flex-direction: column;
 	overflow: hidden;
 	flex-grow: 0;
 	flex-shrink: 0;
+	position: relative;
+	z-index: 50;
 }
 
 .step .transition{
@@ -263,6 +296,7 @@ header:before{
 	margin: 0 10px 18px 10px;
 	text-align: center;
 	text-transform: uppercase;
+	cursor: pointer;
 }
 .step:not(:nth-of-type(2)) .start_value{
 	display:none;
@@ -282,6 +316,63 @@ header:before{
 .step .duration_value:after{
 	content: "ms";
 }
+.step .delete_step{
+	position: absolute;
+	position: absolute;
+	background-color: var(--mawi-red);
+	color: white;
+	text-decoration: none;
+	right: 8px;
+	top: 8px;
+	font-size: 0.8em;
+	text-transform: uppercase;
+	padding: 0.2em 0.4em;
+	border-radius: 5px;
+	display:none;
+}
+.step:hover .delete_step{
+	display: block;
+}
+.step .delete_step:hover{
+	background-color: var(--mawi-deeper-red); 
+}
+.step .step_drag{
+	background: rgba(0,0,0,0.25);
+	display: none;
+	left: 5px;
+	top: 50px;
+	position: absolute;
+	bottom: 50px;
+	width: 6px;
+	border-radius: 2.5px;
+	cursor: ew-resize;
+}
+.step .step_drag:hover{
+	background: rgba(0,0,0,0.7);
+}
+.step .step_drag.drag_right{
+	left: initial;
+	right: 5px;
+}
+.step:hover .step_drag{
+	display: block;
+}
+.step .step_drag.is_dragging{
+	background: var(--mawi-green);
+}
+
+/* when less than 200px in width */
+.step.small .transition{
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-evenly;
+}
+.step.small .ease_value{
+	border:none;
+	padding: 1px 3px;
+	margin: 4px 2px;
+	flex-grow: 0;
+}
 
 
 .step_divider{
@@ -290,11 +381,12 @@ header:before{
 	position: relative;
 	flex-grow: 0;
 	flex-shrink: 0;
+	z-index: 100;
 }
 .step_divider:before{
 	content:"";
-	border-left: 3px dashed transparent;
-	display:block;
+	border-left: 3px dashed rgb(0,0,0,0.3);
+	display:none;
 	left: 3px;
 	top:0;
 	bottom:0;
@@ -314,7 +406,8 @@ header:before{
 	background: var(--mawi-green) url('assets/add_white.svg');
 	color: white;
 	font-size: 2.5em;
-	font-family: "Raleway SemiBold";
+	font-family: "Raleway";
+	font-weight: 800;
 	border: 3px var(--mawi-green) solid;
 	border-radius: 12px;
 	left: calc(4px - var(--add-step-size)/2);
@@ -328,16 +421,23 @@ header:before{
 	
 }
 .step_divider:hover:before{
-	border-color: rgb(0,0,0,0.3);
+	display: block;
 }
 .step_divider:hover .add_step{
 	display:block;
 }
-.step_divider:focus:before{
-	border-color: rgb(0,0,0,0.7);
-}
 .step_divider:first-of-type .add_step{
 	transform: translateX(13px);
+}
+.step_divider.is_dragging:before{
+	border-color: var(--mawi-green);
+}
+.step_divider.is_dragging .add_step{
+	display: none;
+}
+.steps.hide_add_buttons .add_step{
+	/* use this when dragging the slider for an individual block */
+	display:none;
 }
 
 .joint_empty .step_divider:first-of-type .add_step{
