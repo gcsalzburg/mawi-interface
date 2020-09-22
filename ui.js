@@ -276,18 +276,19 @@ document.onmousedown = function(event){
 		};
 
 		document.body.prepend(_step_floater);
+		document.body.classList.add("dragging_in_progress");
 
 		_step.nextElementSibling.remove(); 	// Remove divider that follows this item
 		_step.remove();						// Remove this item	
 
-		let currentDroppable = null;
+		let _steps_droppable_current = null;
 		move_at(event.pageX,event.pageY);
 
-		function move_at(page_x,page_y){
-			_step_floater.style.transform = `translate(${page_x - drag_data.shift_x}px,${page_y - drag_data.shift_y}px)`;
+		function move_at(mouse_x,mouse_y){
+			_step_floater.style.transform = `translate(${mouse_x - drag_data.shift_x}px,${mouse_y - drag_data.shift_y}px)`;
 
 			_step_floater.style.display = "none";
-			let elemBelow = document.elementFromPoint(page_x, page_y);
+			let elemBelow = document.elementFromPoint(mouse_x, mouse_y);
 			_step_floater.style.display = "flex";
 
 			// mousemove events may trigger out of the window (when the ball is dragged off-screen)
@@ -295,25 +296,26 @@ document.onmousedown = function(event){
 			if (!elemBelow) return;
 		  
 			// potential droppables are labeled with the class "droppable" (can be other logic)
-			let droppableBelow = elemBelow.closest('.steps');
+			let _steps_droppable = elemBelow.closest('.steps');
+			let _step_droppable = elemBelow.closest('.step');
 		  
-			if (currentDroppable != droppableBelow) {
-			  // we're flying in or out...
-			  // note: both values can be null
-			  //   currentDroppable=null if we were not over a droppable before this event (e.g over an empty space)
-			  //   droppableBelow=null if we're not over a droppable now, during this event
+			if (_steps_droppable_current != _steps_droppable) {
+				// we're flying in or out...
+				// note: both values can be null
+				//   currentDroppable=null if we were not over a droppable before this event (e.g over an empty space)
+				//   droppableBelow=null if we're not over a droppable now, during this event
 		  
-			  if (currentDroppable) {
-				// the logic to process "flying out" of the droppable (remove highlight)
-				leaveDroppable(currentDroppable);
-				console.log(currentDroppable);
-			  }
-			  currentDroppable = droppableBelow;
-			  if (currentDroppable) {
-				// the logic to process "flying in" of the droppable
-				enterDroppable(currentDroppable);
-				console.log(currentDroppable);
-			  }
+				if (_steps_droppable_current) {
+					// the logic to process "flying out" of the droppable (remove highlight)
+					leaveDroppable(_steps_droppable_current);
+				}
+				_steps_droppable_current = _steps_droppable;
+				if(_steps_droppable_current){
+					// process where to place it within this step
+					positionDroppable(_steps_droppable_current, _step_droppable, mouse_x);
+				}
+			}else if(_steps_droppable != null){
+				positionDroppable(_steps_droppable_current, _step_droppable, mouse_x);
 			}
 		}
 
@@ -322,11 +324,21 @@ document.onmousedown = function(event){
 		}
 		document.addEventListener('mousemove',onMouseMove);
 
-		function enterDroppable(steps_list) {
-			console.log(steps_list);
-			steps_list.firstChild.after(_step_dropper); // Add this dropper
+		function positionDroppable(_steps_list, _nearest_step, mouse_x) {
+			if(_nearest_step == null){
+				// No nearest step, so dump it onto the end
+				_steps_list.lastChild.after(_step_dropper); // Add this dropper
+			}else{
+				_step_centre = (_nearest_step.offsetWidth/2)+_nearest_step.getBoundingClientRect().left;
+				if(_step_centre > mouse_x){
+					// Insert before
+					_nearest_step.before(_step_dropper);
+				}else if(_step_centre < mouse_x){
+					// Insert after
+					_nearest_step.nextElementSibling.after(_step_dropper);
+				}
+			}
 			_step_dropper.after(_step_divider); // Add a step divider after it.
-
 			format_joints();
 		}
 	
@@ -337,6 +349,7 @@ document.onmousedown = function(event){
 
 		_step_floater.onmouseup = function() {
 			document.removeEventListener('mousemove', onMouseMove);
+			document.body.classList.remove("dragging_in_progress");
 			_step_floater.onmouseup = null;
 			_step_floater.remove();
 		  };
