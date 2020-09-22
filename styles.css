@@ -400,6 +400,10 @@ header:before{
 	margin: 4px 2px;
 	flex-grow: 0;
 }
+.step.small .drag_down{
+	width: 30px;
+	margin-left: -15px;
+}
 
 
 .step_divider{
