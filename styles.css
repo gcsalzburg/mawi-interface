@@ -444,6 +444,7 @@ header:before{
 	top:0;
 	bottom:0;
 	position: absolute;
+	cursor:col-resize;
 }
 .step_divider:first-of-type{
 	cursor:default;
