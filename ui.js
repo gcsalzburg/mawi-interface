@@ -206,7 +206,7 @@ document.onmousedown = function(event){
 			document.onmouseup = null;
 			format_joints();
 		};
-	}else if(_e.classList.contains("step_drag")){
+	}else if(_e.classList.contains("drag_right")){
 		// Drag a handle inside an individual step
 
 		_e.classList.add("is_dragging");
@@ -236,7 +236,7 @@ document.onmousedown = function(event){
 			document.onmouseup = null;
 			format_joints();
 		};
-	}else if(_e.classList.contains("scale_dragger")){ // TODO: Allow dragging on the check markers and the numbers as well
+	}else if(_e.classList.contains("scale_dragger")){
 		// Dragging the scale
 		_f = _e.parentNode;
 		_f.classList.add("is_dragging");
@@ -263,7 +263,83 @@ document.onmousedown = function(event){
 			document.onmouseup = null;
 			format_joints();
 		};
+	}else if(_e.classList.contains("drag_down")){ // Drag the down handler with the grabber hand
+		_step = _e.parentNode;
+		_step_floater = _step.cloneNode(true);
+		_step_dropper = _step.cloneNode(true);
+		_step_divider = _step.nextElementSibling.cloneNode(true);
+		_step_floater.classList.add("floating");
 
+		const drag_data = {
+			shift_x: event.clientX - _step.getBoundingClientRect().left,
+			shift_y: event.clientY - _step.getBoundingClientRect().top
+		};
+
+		document.body.prepend(_step_floater);
+
+		_step.nextElementSibling.remove(); 	// Remove divider that follows this item
+		_step.remove();						// Remove this item	
+
+		let currentDroppable = null;
+		move_at(event.pageX,event.pageY);
+
+		function move_at(page_x,page_y){
+			_step_floater.style.transform = `translate(${page_x - drag_data.shift_x}px,${page_y - drag_data.shift_y}px)`;
+
+			_step_floater.style.display = "none";
+			let elemBelow = document.elementFromPoint(page_x, page_y);
+			_step_floater.style.display = "flex";
+
+			// mousemove events may trigger out of the window (when the ball is dragged off-screen)
+			// if clientX/clientY are out of the window, then elementFromPoint returns null
+			if (!elemBelow) return;
+		  
+			// potential droppables are labeled with the class "droppable" (can be other logic)
+			let droppableBelow = elemBelow.closest('.steps');
+		  
+			if (currentDroppable != droppableBelow) {
+			  // we're flying in or out...
+			  // note: both values can be null
+			  //   currentDroppable=null if we were not over a droppable before this event (e.g over an empty space)
+			  //   droppableBelow=null if we're not over a droppable now, during this event
+		  
+			  if (currentDroppable) {
+				// the logic to process "flying out" of the droppable (remove highlight)
+				leaveDroppable(currentDroppable);
+				console.log(currentDroppable);
+			  }
+			  currentDroppable = droppableBelow;
+			  if (currentDroppable) {
+				// the logic to process "flying in" of the droppable
+				enterDroppable(currentDroppable);
+				console.log(currentDroppable);
+			  }
+			}
+		}
+
+		function onMouseMove(event){
+			move_at(event.pageX, event.pageY);
+		}
+		document.addEventListener('mousemove',onMouseMove);
+
+		function enterDroppable(steps_list) {
+			console.log(steps_list);
+			steps_list.firstChild.after(_step_dropper); // Add this dropper
+			_step_dropper.after(_step_divider); // Add a step divider after it.
+			
+			format_joints();
+		}
+	
+		function leaveDroppable(steps_list) {
+			_step_divider.remove(); // Remove the next divider
+			_step_dropper.remove(); // Remove the dropper
+		}
+
+		_step_floater.onmouseup = function() {
+			document.removeEventListener('mousemove', onMouseMove);
+			_step_floater.onmouseup = null;
+			_step_floater.remove();
+		  };
 	}
 }
 

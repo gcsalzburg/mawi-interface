@@ -35,11 +35,6 @@ html,body {
   cursor: default;
 }
 body{
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
 	user-select: none;
 }
 
@@ -183,7 +178,7 @@ header:before{
 	bottom: 0;
 	right: 0;
 	display: block;
-	z-index: 10000;
+	z-index: 100;
 }
 .scale .major{
 	width: 2px;
@@ -384,8 +379,9 @@ header:before{
 .step:hover .step_drag{
 	display: block;
 }
-.step .step_drag.is_dragging{
+.step .step_drag.drag_down.is_dragging{
 	background: var(--mawi-green);
+	cursor: grabbing;
 }
 
 /* when less than 200px in width */
@@ -403,6 +399,15 @@ header:before{
 .step.small .drag_down{
 	width: 30px;
 	margin-left: -15px;
+}
+
+/* when being dragged around screen */
+.step.floating{
+	position: absolute;
+	opacity: 0.6;
+	z-index: 10000;
+	left: 0;
+	top: 0;
 }
 
 
