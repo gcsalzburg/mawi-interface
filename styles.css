@@ -16,6 +16,7 @@
 
 	--mawi-light-grey-outline: rgb(245,245,245);
 	--mawi-mid-grey: rgba(200,200,200);
+	--mawi-dark-grey: rgba(80,80,80);
 
 	--header-height: 120px;
 	--joint-col-width: 250px;
@@ -170,6 +171,7 @@ header:before{
 	margin-bottom: 10px;
 	position:relative;
 	width: 3000px;
+	cursor: grab;
 }
 .scale .scale_dragger{
 	position: absolute;
@@ -212,10 +214,13 @@ header:before{
 	transform: translateX(-1px);
 }
 .scale:hover .major, .scale:hover .minor{
-	background: rgba(0,0,0,0.7);
+	background: var(--mawi-dark-grey);
 }
 .scale:hover .major:before{
-	color: rgba(0,0,0,0.7);
+	color: var(--mawi-dark-grey);
+}
+.scale.is_dragging{
+	cursor: grabbing;
 }
 .scale.is_dragging .major, .scale.is_dragging .minor{
 	background: var(--mawi-green);
@@ -368,7 +373,7 @@ header:before{
 	cursor: ew-resize;
 }
 .step .step_drag:hover{
-	background: rgba(0,0,0,0.7);
+	background: var(--mawi-dark-grey);
 }
 .step .step_drag.drag_right{
 	left: initial;
@@ -414,6 +419,7 @@ header:before{
 	z-index: 10000;
 	left: 0;
 	top: 0;
+	cursor:grabbing;
 }
 
 
@@ -482,7 +488,7 @@ header:before{
 	
 }
 .step_divider:hover:after{
-	border-color: rgba(0,0,0,0.7);
+	border-color: var(--mawi-dark-grey);
 }
 .step_divider:hover .add_step{
 	display:block;

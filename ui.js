@@ -70,16 +70,32 @@ document.addEventListener('DOMContentLoaded', () => {
 		}
 	}
 
+	// Add scroll on scale listener
+	document.querySelector(".scale").onwheel = zoomScale;
+
 	build_scale();
 	format_joints();
 });
 
 let scale_factor = 1;
 
+function zoomScale(event){
+	event.preventDefault();
+	console.log(event.deltaY);
+
+	scale_factor = scale_factor - (event.deltaY/20);
+
+	// TODO: re-align so that we zoom in the centre of the scale always
+
+	// Now rebuild everything.
+	build_scale();
+	format_joints();
+}
+
 function format_joints(){
 
 	const joints = document.querySelectorAll('.joint');
-	for(i=0; i<joints.length; i++){
+	for(let i=0; i<joints.length; i++){
 		// Reduce visual weight of joints with no steps in them
 		joints[i].classList.remove('joint_empty');
 		if(joints[i].querySelectorAll('.step').length < 1){
@@ -88,11 +104,11 @@ function format_joints(){
 
 		const steps = joints[i].querySelectorAll('.step');
 		let last_start = -1;
-		for(j=0; j<steps.length; j++){
+		for(let j=0; j<steps.length; j++){
 			let _step = steps[j];
 
 			// Set width of block based on duration
-			_new_width = (scale_factor * _step.querySelector('.duration_value').textContent);
+			const _new_width = (scale_factor * _step.querySelector('.duration_value').textContent);
 			_step.style.width = _new_width + 'px';
 			_step.classList.remove('small');
 			if(_new_width < 200){
@@ -124,11 +140,49 @@ function format_joints(){
 
 function build_scale(){
 	const scale = document.querySelector('.scale');
-	for(i=0; i<200; i++){
-		scale.innerHTML += `<span class="minor" style="left:${(i*20)+1}px"></span>`;
+
+	let markers = scale.querySelectorAll(".major, .minor");
+	for(let i=0; i<markers.length; i++){
+		markers[i].remove();
 	}
-	for(i=0; i<20; i++){
-		scale.innerHTML += `<span class="major" data-value="${(i*100)}" style="left:${(i*100)+1}px"></span>`;
+
+	// minor = every 20ms
+	// major = every 100ms
+	// scale length = up to 2000ms
+
+	_scale_length = 2000;
+	_major_markers = 100;
+	_minor_markers = 20;
+
+	// Calculate spacings
+	_major_spacing = _major_markers*scale_factor;
+	_minor_spacing = _minor_markers*scale_factor;
+
+	// TODO: create scale spacing iteratively
+	if(_minor_spacing > 25){
+		_minor_markers /= 2;
+		_major_markers /= 2;
+
+		_major_spacing = _major_markers*scale_factor;
+		_minor_spacing = _minor_markers*scale_factor;
+	}else if(_minor_spacing < 12){
+		_minor_markers *= 2;
+		_major_markers *= 2;
+
+		_major_spacing = _major_markers*scale_factor;
+		_minor_spacing = _minor_markers*scale_factor;
+
+	}
+
+	_number_majors = (_scale_length / _major_markers)+1;
+	_number_minors = (_scale_length / _minor_markers)+1;
+
+	for(i=0; i<_number_majors; i++){
+		scale.innerHTML += `<span class="major" data-value="${(_major_markers*i)}" style="left:${(_major_spacing*i)+1}px"></span>`;
+	}
+	
+	for(i=0; i<_number_minors; i++){
+		scale.innerHTML += `<span class="minor" style="left:${(_minor_spacing*i)+1}px"></span>`;
 	}
 }
 
@@ -187,12 +241,12 @@ document.onmousedown = function(event){
 		if(_e.previousElementSibling != null){
 			drag_data.has_before = true;
 			drag_data.before_step = _e.previousElementSibling;
-			drag_data.before_w = _e.previousElementSibling.offsetWidth;
+			drag_data.before_duration = parseInt(_e.previousElementSibling.querySelector(".duration_value").textContent);
 		}
 		if(_e.nextElementSibling != null){
 			drag_data.has_after = true;
 			drag_data.after_step = _e.nextElementSibling;
-			drag_data.after_w = _e.nextElementSibling.offsetWidth;
+			drag_data.after_duration = parseInt(_e.nextElementSibling.querySelector(".duration_value").textContent);
 		}
 		function onStepDividerDrag(event){
 			setDividerWidths(drag_data,event.pageX);
@@ -221,7 +275,7 @@ document.onmousedown = function(event){
 		if(_e.classList.contains("drag_right")){
 			drag_data.has_before = true;
 			drag_data.before_step = _e.parentNode;
-			drag_data.before_w = _e.parentNode.offsetWidth;
+			drag_data.before_duration = parseInt(_e.parentNode.querySelector(".duration_value").textContent);
 		}
 		function onStepDividerDrag(event){
 			setDividerWidths(drag_data,event.pageX);
@@ -383,14 +437,12 @@ function update_step_offsets(_x){
 
 function setDividerWidths(data,new_x){
 	if(data.before_step != null){
-		const new_before_width = Math.max(data.before_w+(new_x-data.start_x),50);
-		data.before_step.style.width = new_before_width+'px';
-		data.before_step.querySelector(".duration_value").textContent = new_before_width;
+		const new_before_duration = data.before_duration + ((new_x-data.start_x)/scale_factor);
+		data.before_step.querySelector(".duration_value").textContent = Math.max(new_before_duration,50);
 	}
 	if(data.after_step != null){
-		const new_after_width = Math.max(data.after_w-(new_x-data.start_x),50);
-		data.after_step.style.width = new_after_width+'px';
-		data.after_step.querySelector(".duration_value").textContent = new_after_width;
+		const new_after_duration = data.after_duration - ((new_x-data.start_x)/scale_factor);
+		data.after_step.querySelector(".duration_value").textContent = Math.max(new_after_duration,50);
 	}
 	format_joints(); // on the fly, so that we apply things like "small" class to shrinking boxes
 }
