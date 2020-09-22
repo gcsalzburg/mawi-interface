@@ -89,7 +89,7 @@ function format_joints(){
 		const steps = joints[i].querySelectorAll('.step');
 		let last_start = -1;
 		for(j=0; j<steps.length; j++){
-			_step = steps[j];
+			let _step = steps[j];
 
 			// Set width of block based on duration
 			_new_width = (scale_factor * _step.querySelector('.duration_value').textContent);
@@ -278,13 +278,16 @@ document.onmousedown = function(event){
 		document.body.prepend(_step_floater);
 		document.body.classList.add("dragging_in_progress");
 
-		_step.nextElementSibling.remove(); 	// Remove divider that follows this item
+		_step_divider_removed = _step.nextElementSibling;
+		_step_divider_removed.remove(); 	// Remove divider that follows this item
+		_step.previousElementSibling.classList.add("removal_marker");
 		_step.remove();						// Remove this item	
 
 		let _steps_droppable_current = null;
-		move_at(event.pageX,event.pageY);
+		let _last_shift_state = null;
+		move_at(event.pageX, event.pageY, event.shiftKey);
 
-		function move_at(mouse_x,mouse_y){
+		function move_at(mouse_x,mouse_y,shiftkey){
 			_step_floater.style.transform = `translate(${mouse_x - drag_data.shift_x}px,${mouse_y - drag_data.shift_y}px)`;
 
 			_step_floater.style.display = "none";
@@ -294,6 +297,20 @@ document.onmousedown = function(event){
 			// mousemove events may trigger out of the window (when the ball is dragged off-screen)
 			// if clientX/clientY are out of the window, then elementFromPoint returns null
 			if (!elemBelow) return;
+
+			if(shiftkey != _last_shift_state){
+				if(shiftkey){
+					// We decided to copy, so put the old one back
+					_marker = document.querySelector(".removal_marker");
+					_marker.after(_step);
+					_step.after(_step_divider_removed);
+				}else{
+					// We decided not to copy, so remove the old one
+					_step_divider_removed.remove(); 	// Remove divider that follows this item
+					_step.remove();						// Remove this item	
+				}
+			}
+			_last_shift_state = shiftkey;
 		  
 			// potential droppables are labeled with the class "droppable" (can be other logic)
 			let _steps_droppable = elemBelow.closest('.steps');
@@ -302,8 +319,8 @@ document.onmousedown = function(event){
 			if (_steps_droppable_current != _steps_droppable) {
 				// we're flying in or out...
 				// note: both values can be null
-				//   currentDroppable=null if we were not over a droppable before this event (e.g over an empty space)
-				//   droppableBelow=null if we're not over a droppable now, during this event
+				//   _steps_droppable_current=null if we were not over a droppable before this event (e.g over an empty space)
+				//   _steps_droppable=null if we're not over a droppable now, during this event
 		  
 				if (_steps_droppable_current) {
 					// the logic to process "flying out" of the droppable (remove highlight)
@@ -320,7 +337,7 @@ document.onmousedown = function(event){
 		}
 
 		function onMouseMove(event){
-			move_at(event.pageX, event.pageY);
+			move_at(event.pageX, event.pageY, event.shiftKey);
 		}
 		document.addEventListener('mousemove',onMouseMove);
 
@@ -350,6 +367,7 @@ document.onmousedown = function(event){
 		_step_floater.onmouseup = function() {
 			document.removeEventListener('mousemove', onMouseMove);
 			document.body.classList.remove("dragging_in_progress");
+			document.querySelector(".removal_marker").classList.remove("removal_marker");
 			_step_floater.onmouseup = null;
 			_step_floater.remove();
 		  };
