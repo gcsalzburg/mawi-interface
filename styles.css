@@ -90,6 +90,15 @@ header:before{
 	left: -30px;
 	top: -2px;
 }
+.connection_start.waiting{
+	cursor: progress;
+}
+.connection_status.connected{
+	cursor: progress;
+}
+.connection_start.waiting:before{
+	background: var(--mawi-orange);
+}
 .connection_status.connected:before{
 	background: var(--mawi-green);
 }
@@ -149,6 +158,7 @@ header:before{
 	background-color: var(--mawi-green);
 	font-weight: bold;
 	text-transform: uppercase;
+	cursor: wait;
 }
 .control_nav a.upload_and_run:hover{
 	border-color: var(--mawi-green-120);
@@ -363,6 +373,14 @@ header:before{
 	left: initial;
 	right: 5px;
 }
+.step .step_drag.drag_down{
+	width: 50px;
+    height: 6px;
+    top: 5px;
+    left: 50%;
+	margin-left: -25px;
+	cursor: grab;
+}
 .step:hover .step_drag{
 	display: block;
 }
@@ -386,7 +404,7 @@ header:before{
 
 .step_divider{
 	width: 9px;
-	cursor:ew-resize;
+	cursor:col-resize;
 	position: relative;
 	flex-grow: 0;
 	flex-shrink: 0;
