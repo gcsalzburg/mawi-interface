@@ -81,11 +81,29 @@ let scale_factor = 1;
 
 function zoomScale(event){
 	event.preventDefault();
-	console.log(event.deltaY);
 
-	scale_factor = scale_factor - (event.deltaY/20);
+	const scaling_speed = 20;
 
-	// TODO: re-align so that we zoom in the centre of the scale always
+	_scale = document.querySelector(".scale");
+	_curr_offset = parseInt(_scale.dataset.new_offset);
+
+	// TODO: Preserve scaling around the centrepoint
+	// save current centre point
+/*	if(_curr_offset < 0){
+		const _half_width = document.querySelector(".scale_container").offsetWidth/2;
+		const _centre = (_half_width - _curr_offset)/scale_factor;
+
+		scale_factor = scale_factor - (event.deltaY/scaling_speed);
+
+		let _new_x = 0; //
+		_scale.style.transform = `translateX(${_new_x})`;
+		_scale.dataset.new_offset = _new_x;
+		_scale.dataset.offset = _new_x;
+		update_step_offsets(_new_x);
+
+	}else{*/
+		scale_factor = scale_factor - (event.deltaY/scaling_speed);
+/*	}*/
 
 	// Now rebuild everything.
 	build_scale();
@@ -303,7 +321,7 @@ document.onmousedown = function(event){
 			if(_new_x > 0){
 				_new_x = 0;
 			}
-			_f.style.transform = `translateX(${_new_x}px`;
+			_f.style.transform = `translateX(${_new_x}px)`;
 			_f.dataset.new_offset = _new_x;
 			update_step_offsets(_new_x);
 		}
@@ -437,11 +455,11 @@ function update_step_offsets(_x){
 
 function setDividerWidths(data,new_x){
 	if(data.before_step != null){
-		const new_before_duration = data.before_duration + ((new_x-data.start_x)/scale_factor);
+		const new_before_duration = Math.round(data.before_duration + ((new_x-data.start_x)/scale_factor));
 		data.before_step.querySelector(".duration_value").textContent = Math.max(new_before_duration,50);
 	}
 	if(data.after_step != null){
-		const new_after_duration = data.after_duration - ((new_x-data.start_x)/scale_factor);
+		const new_after_duration = Math.round(data.after_duration - ((new_x-data.start_x)/scale_factor));
 		data.after_step.querySelector(".duration_value").textContent = Math.max(new_after_duration,50);
 	}
 	format_joints(); // on the fly, so that we apply things like "small" class to shrinking boxes
