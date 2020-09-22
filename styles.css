@@ -166,7 +166,7 @@ header:before{
 }
 .scale{
 	height: 60px;
-	left: 12px;
+	left: 6px;
 	margin-bottom: 10px;
 	position:relative;
 	width: 3000px;
@@ -231,7 +231,7 @@ header:before{
 	display: block;
 	border-radius: 20px;
 	position: relative;
-	padding: 6px 6px 6px 0;
+	padding: 0;
 	margin-bottom: 10px;
 }
 .joint h2{
@@ -283,6 +283,9 @@ header:before{
 	flex-shrink: 0;
 	position: relative;
 	z-index: 50;
+	margin: 1.5px 0;
+	border:4.5px solid white;
+	box-sizing: border-box;
 }
 
 .step .transition{
@@ -311,6 +314,9 @@ header:before{
 	text-align: center;
 	text-transform: uppercase;
 	cursor: pointer;
+}
+.step:nth-of-type(2){
+	margin-left: 1.5px;
 }
 .step:not(:nth-of-type(2)) .start_value{
 	display:none;
@@ -404,7 +410,7 @@ header:before{
 /* when being dragged around screen */
 .step.floating{
 	position: absolute;
-	opacity: 0.6;
+	opacity: 0.4;
 	z-index: 10000;
 	left: 0;
 	top: 0;
@@ -412,27 +418,27 @@ header:before{
 
 
 .step_divider{
-	width: 9px;
+	width: 0px;
 	cursor:col-resize;
 	position: relative;
 	flex-grow: 0;
 	flex-shrink: 0;
 	z-index: 100;
+	margin:6px 0;
 }
-.step_divider:before{
+.step_divider:after{
 	content:"";
-	border-left: 3px dashed rgb(0,0,0,0.3);
-	display:none;
-	left: 3px;
+	border-left: 2px dashed rgb(0,0,0,0.3);
+	display:block;
+	left: -1px;
 	top:0;
 	bottom:0;
 	position: absolute;
 }
 .step_divider:first-of-type{
 	cursor:default;
-	width: 6px;
 }
-.step_divider:first-of-type:before{
+.step_divider:first-of-type:after{
 	border:none;
 }
 .step_divider .add_step{
@@ -456,7 +462,7 @@ header:before{
 	background-position: 50% 50%;
 	
 }
-.step_divider:hover:before{
+.step_divider:hover:after{
 	display: block;
 }
 .step_divider:hover .add_step{
@@ -465,7 +471,7 @@ header:before{
 .step_divider:first-of-type .add_step{
 	transform: translateX(13px);
 }
-.step_divider.is_dragging:before{
+.step_divider.is_dragging:after{
 	border-color: var(--mawi-green);
 }
 .step_divider.is_dragging .add_step{

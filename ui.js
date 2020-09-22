@@ -8,7 +8,7 @@ var sequence = {
 					start_value: 120,
 					ease_value: "linear",
 					end_value: 60,
-					duration: 1000
+					duration: 500
 				},
 				{
 					ease_value: "ease-in",
@@ -265,7 +265,7 @@ document.onmousedown = function(event){
 		};
 	}else if(_e.classList.contains("drag_down")){ // Drag the down handler with the grabber hand
 		_step = _e.parentNode;
-		_step_floater = _step.cloneNode(true);
+		_step_floater = _step.cloneNode();
 		_step_dropper = _step.cloneNode(true);
 		_step_divider = _step.nextElementSibling.cloneNode(true);
 		_step_floater.classList.add("floating");
@@ -326,7 +326,7 @@ document.onmousedown = function(event){
 			console.log(steps_list);
 			steps_list.firstChild.after(_step_dropper); // Add this dropper
 			_step_dropper.after(_step_divider); // Add a step divider after it.
-			
+
 			format_joints();
 		}
 	
