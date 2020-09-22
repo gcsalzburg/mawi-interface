@@ -9,6 +9,7 @@ const template_step = `
 			<span class="duration_value">{{duration}}</span>
 		</div>
 		<a href="#delete" class="delete_step">Remove</a>
+		<a href="#drag_down" class="step_drag drag_down"></a>
 		<a href="#drag_right" class="step_drag drag_right"></a>
 	</div>
 `;
