@@ -419,12 +419,22 @@ header:before{
 
 .step_divider{
 	width: 0px;
-	cursor:col-resize;
 	position: relative;
 	flex-grow: 0;
 	flex-shrink: 0;
 	z-index: 100;
 	margin:6px 0;
+	min-height:100%;
+}
+.step_divider:before{
+	content:"";
+	display:block;
+	width:9px;
+	left:-4.5px;
+	top:0px;
+	height:100%;
+	position:relative;
+	cursor:col-resize;
 }
 .step_divider:after{
 	content:"";
@@ -438,8 +448,11 @@ header:before{
 .step_divider:first-of-type{
 	cursor:default;
 }
-.step_divider:first-of-type:after{
-	border:none;
+.step_divider:first-of-type:after, .step_divider:last-of-type:after{
+	display:none;
+}
+.step_divider:first-of-type:before, .step_divider:last-of-type:before{
+	cursor: default;
 }
 .step_divider .add_step{
 	width: var(--add-step-size);
@@ -452,7 +465,7 @@ header:before{
 	font-weight: 800;
 	border: 3px var(--mawi-green) solid;
 	border-radius: 12px;
-	left: calc(4px - var(--add-step-size)/2);
+	left: calc(0px - var(--add-step-size)/2);
 	top: calc(calc(50% - var(--add-step-size)/2));
 	cursor: pointer;
 	box-sizing: border-box;
@@ -460,16 +473,17 @@ header:before{
 	background-size: 60%;
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
+	z-index:50;
 	
 }
 .step_divider:hover:after{
-	display: block;
+	border-color: rgba(0,0,0,0.7);
 }
 .step_divider:hover .add_step{
 	display:block;
 }
 .step_divider:first-of-type .add_step{
-	transform: translateX(13px);
+	transform: translateX(19px);
 }
 .step_divider.is_dragging:after{
 	border-color: var(--mawi-green);

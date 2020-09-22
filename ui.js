@@ -125,10 +125,10 @@ function format_joints(){
 function build_scale(){
 	const scale = document.querySelector('.scale');
 	for(i=0; i<200; i++){
-		scale.innerHTML += `<span class="minor" style="left:${i*20}px"></span>`;
+		scale.innerHTML += `<span class="minor" style="left:${(i*20)+1}px"></span>`;
 	}
 	for(i=0; i<20; i++){
-		scale.innerHTML += `<span class="major" data-value="${i*100}" style="left:${i*100}px"></span>`;
+		scale.innerHTML += `<span class="major" data-value="${(i*100)}" style="left:${(i*100)+1}px"></span>`;
 	}
 }
 
@@ -172,8 +172,8 @@ document.onmousedown = function(event){
 	if(_e.classList.contains("step_divider")){
 		// Drag a step divider
 
-		if(_e.previousElementSibling == null){
-			// If this is the first step divider, we can't drag it
+		if((_e.previousElementSibling == null)||(_e.nextElementSibling == null)){
+			// If this is the first or last step divider, we can't drag it
 			return false;
 		}
 		_e.classList.add("is_dragging");
