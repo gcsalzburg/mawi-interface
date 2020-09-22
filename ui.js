@@ -187,12 +187,12 @@ document.onmousedown = function(event){
 		if(_e.previousElementSibling != null){
 			drag_data.has_before = true;
 			drag_data.before_step = _e.previousElementSibling;
-			drag_data.before_w = _e.previousElementSibling.clientWidth;
+			drag_data.before_w = _e.previousElementSibling.offsetWidth;
 		}
 		if(_e.nextElementSibling != null){
 			drag_data.has_after = true;
 			drag_data.after_step = _e.nextElementSibling;
-			drag_data.after_w = _e.nextElementSibling.clientWidth;
+			drag_data.after_w = _e.nextElementSibling.offsetWidth;
 		}
 		function onStepDividerDrag(event){
 			setDividerWidths(drag_data,event.pageX);
@@ -221,7 +221,7 @@ document.onmousedown = function(event){
 		if(_e.classList.contains("drag_right")){
 			drag_data.has_before = true;
 			drag_data.before_step = _e.parentNode;
-			drag_data.before_w = _e.parentNode.clientWidth;
+			drag_data.before_w = _e.parentNode.offsetWidth;
 		}
 		function onStepDividerDrag(event){
 			setDividerWidths(drag_data,event.pageX);
