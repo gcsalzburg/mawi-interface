@@ -79,10 +79,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 let scale_factor = 1;
 
+
 function zoomScale(event){
 	event.preventDefault();
 
-	const scaling_speed = 20;
+	const scaling_speed = 0.15;
 
 	_scale = document.querySelector(".scale");
 	_curr_offset = parseInt(_scale.dataset.new_offset);
@@ -102,7 +103,7 @@ function zoomScale(event){
 		update_step_offsets(_new_x);
 
 	}else{*/
-		scale_factor = scale_factor - (event.deltaY/scaling_speed);
+		scale_factor = scale_factor - Math.sign(event.deltaY)*scaling_speed;
 /*	}*/
 
 	// Now rebuild everything.
