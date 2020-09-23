@@ -357,10 +357,10 @@ document.onmousedown = function(event){
 		_step.remove();						// Remove this item	
 
 		let _steps_droppable_current = null;
-		let _last_shift_state = null;
-		move_at(event.pageX, event.pageY, event.shiftKey);
+		let _last_ctrl_state = null;
+		move_at(event.pageX, event.pageY, event.ctrlKey);
 
-		function move_at(mouse_x,mouse_y,shiftkey){
+		function move_at(mouse_x,mouse_y,ctrlKey){
 			_step_floater.style.transform = `translate(${mouse_x - drag_data.shift_x}px,${mouse_y - drag_data.shift_y}px)`;
 
 			_step_floater.style.display = "none";
@@ -371,8 +371,8 @@ document.onmousedown = function(event){
 			// if clientX/clientY are out of the window, then elementFromPoint returns null
 			if (!elemBelow) return;
 
-			if(shiftkey != _last_shift_state){
-				if(shiftkey){
+			if(ctrlKey != _last_ctrl_state){
+				if(ctrlKey){
 					// We decided to copy, so put the old one back
 					_marker = document.querySelector(".removal_marker");
 					_marker.after(_step);
@@ -383,7 +383,7 @@ document.onmousedown = function(event){
 					_step.remove();						// Remove this item	
 				}
 			}
-			_last_shift_state = shiftkey;
+			_last_ctrl_state = ctrlKey;
 		  
 			// potential droppables are labeled with the class "droppable" (can be other logic)
 			let _steps_droppable = elemBelow.closest('.steps');
@@ -410,7 +410,7 @@ document.onmousedown = function(event){
 		}
 
 		function onMouseMove(event){
-			move_at(event.pageX, event.pageY, event.shiftKey);
+			move_at(event.pageX, event.pageY, event.ctrlKey);
 		}
 		document.addEventListener('mousemove',onMouseMove);
 
