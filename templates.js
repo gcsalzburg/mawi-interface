@@ -14,8 +14,7 @@ const template_step = `
 	</div>
 `;
 
-const template_step_divider = `<div class="step_divider">
-<a href="#add" class="add_step"></a></div>`;
+const template_step_divider = `<div class="step_divider"><a href="#add" class="add_step"></a></div>`;
 
 const data_default = {
 	start_value: 0,
