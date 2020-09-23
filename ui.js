@@ -1,116 +1,18 @@
-const sequence = {
-	name: "Test 1",
-	joints: [
-		{
-			joint: "beak",
-			steps: [
-				{
-					start_value: 120,
-					ease_value: "linear",
-					end_value: 60,
-					duration: 500
-				},
-				{
-					ease_value: "ease-in",
-					end_value: 110,
-					duration: 300
-				},
-				{
-					ease_value: "bounce-in",
-					end_value: 110,
-					duration: 300
-				}
-			]
-		},
-		{
-			joint: "head",
-			steps: [
-				{
-					start_value: 4,
-					ease_value: "ease-in",
-					end_value: 80,
-					duration: 700
-				}
-			]
-		},
-		{
-			joint: "elbow",
-			steps: [
-				{
-					start_value: 120,
-					ease_value: "bounce-out",
-					end_value: 60,
-					duration: 250
-				},
-				{
-					ease_value: "bounce-out",
-					end_value: 110,
-					duration: 300
-				}
-			]
-		}
-	]
-};
-
 // When page loads
 document.addEventListener('DOMContentLoaded', () => {
 
-	
-	const joints = document.querySelectorAll('.joint');
-	for(i=0; i<joints.length; i++){
-		joints[i].querySelector('.steps').innerHTML = Mustache.render(template_step_divider);
-	}
-
-	for(i=0; i<sequence.joints.length; i++){
-		let joint = sequence.joints[i].joint;
-		let steps = sequence.joints[i].steps;
-
-		for(j=0; j<steps.length; j++){
-			document.querySelector(`#${joint} .steps`).innerHTML += Mustache.render(template_step, steps[j]) + Mustache.render(template_step_divider);
-		}
-	}
+	// Load the first sequence
+	load_sequence(test_sequence);
 
 	// Add scroll on scale listener
 	document.querySelector(".scale").onwheel = zoomScale;
 
-	build_scale();
-	format_joints();
+	draw_scale();		// Draw the scale
+	format_steps();	// Format steps
 
-	generate_sequence();
+	console.log(unload_sequence());
 });
 
-function generate_sequence(){
-	const _sequence = {
-		name: "",
-		joints: []
-	};
-
-	_sequence.name = "put name here";
-
-	const joints = document.querySelectorAll('.joint');
-	for(i=0; i<joints.length; i++){
-
-		const _joint_name = joints[i].getAttribute("id");
-		const _joint_steps = {
-			joint: _joint_name,
-			steps: []
-		};
-
-		const _steps = joints[i].querySelectorAll(".step");
-		for(j=0; j<_steps.length; j++){
-			_joint_steps.steps.push({
-				start_value: 	_steps[j].querySelector(".start_value").textContent,
-				ease_value:		_steps[j].querySelector(".ease_value").textContent,
-				end_value:		_steps[j].querySelector(".end_value").textContent,
-				duration:		_steps[j].querySelector(".duration_value").textContent
-			});
-		}
-
-		_sequence.joints.push(_joint_steps);
-	}
-	console.log(_sequence);
-
-}
 
 let scale_factor = 1;
 
@@ -142,11 +44,11 @@ function zoomScale(event){
 /*	}*/
 
 	// Now rebuild everything.
-	build_scale();
-	format_joints();
+	draw_scale();
+	format_steps();
 }
 
-function format_joints(){
+function format_steps(){
 
 	const joints = document.querySelectorAll('.joint');
 	for(let i=0; i<joints.length; i++){
@@ -192,7 +94,7 @@ function format_joints(){
 }
 
 
-function build_scale(){
+function draw_scale(){
 	const scale = document.querySelector('.scale');
 
 	let markers = scale.querySelectorAll(".major, .minor");
@@ -266,7 +168,7 @@ document.onclick = function(event) {
 			_e.textContent = "linear";
 		}
 	}
-	format_joints();
+	format_steps();
 };
 
 // Drag handling for sliders
@@ -312,7 +214,7 @@ document.onmousedown = function(event){
 			_e.classList.remove("is_dragging");
 			document.removeEventListener('mousemove', onStepDividerDrag);
 			document.onmouseup = null;
-			format_joints();
+			format_steps();
 		};
 	}else if(_e.classList.contains("drag_right")){
 		// Drag a handle inside an individual step
@@ -342,7 +244,7 @@ document.onmousedown = function(event){
 			_e.parentNode.parentNode.classList.remove("hide_add_buttons");
 			document.removeEventListener('mousemove', onStepDividerDrag);
 			document.onmouseup = null;
-			format_joints();
+			format_steps();
 		};
 	}else if(_e.classList.contains("scale_dragger")){
 		// Dragging the scale
@@ -369,7 +271,7 @@ document.onmousedown = function(event){
 			_f.dataset.offset = _f.dataset.new_offset;
 			document.removeEventListener('mousemove', onScaleDrag);
 			document.onmouseup = null;
-			format_joints();
+			format_steps();
 		};
 	}else if(_e.classList.contains("drag_down")){ // Drag the down handler with the grabber hand
 		_step = _e.parentNode;
@@ -464,7 +366,7 @@ document.onmousedown = function(event){
 				}
 			}
 			_step_dropper.after(_step_divider); // Add a step divider after it.
-			format_joints();
+			format_steps();
 		}
 	
 		function leaveDroppable(steps_list) {
@@ -498,5 +400,5 @@ function setDividerWidths(data,new_x){
 		const new_after_duration = Math.round(data.after_duration - ((new_x-data.start_x)/scale_factor));
 		data.after_step.querySelector(".duration_value").textContent = Math.max(new_after_duration,50);
 	}
-	format_joints(); // on the fly, so that we apply things like "small" class to shrinking boxes
+	format_steps(); // on the fly, so that we apply things like "small" class to shrinking boxes
 }
