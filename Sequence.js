@@ -50,10 +50,10 @@ class Sequence {
 			const _steps = joints[i].querySelectorAll(".step");
 			for(let j=0; j<_steps.length; j++){
 				_joint_steps.steps.push({
-					start_value: 	_steps[j].dataset.startValue,
-					ease_value:		_steps[j].dataset.easeValue,
-					end_value:		_steps[j].dataset.endValue,
-					duration:		_steps[j].dataset.duration
+					start: 		_steps[j].dataset.start,
+					ease:			_steps[j].dataset.ease,
+					end:			_steps[j].dataset.end,
+					duration:	_steps[j].dataset.duration
 				});
 			}
 

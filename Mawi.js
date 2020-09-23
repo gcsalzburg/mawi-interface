@@ -59,8 +59,6 @@ class Mawi {
 					_step.classList.add("small");
 				}
 
-				// Update text value on block
-				_step.querySelector('.duration_value').textContent = _step.dataset.duration
 
 				// Update start value based on previous start value
 				if(last_start >= 0){
@@ -68,8 +66,8 @@ class Mawi {
 				}
 				last_start = _step.querySelector(".end_value").textContent;
 
-				// Set colour style based on ease tyle
-				let _ease = _step.querySelector('.ease_value').textContent;
+				// Set colour style based on ease style
+				let _ease = _step.dataset.ease;
 				_step.classList.remove('step_linear');
 				_step.classList.remove('step_ease');
 				_step.classList.remove('step_bounce');
@@ -80,6 +78,10 @@ class Mawi {
 				}else if(_ease.indexOf('bounce') >= 0){
 					_step.classList.add('step_bounce');
 				}
+				
+				// Update text values
+				_step.querySelector('.duration_value').textContent = _step.dataset.duration;
+				_step.querySelector('.ease_value').textContent = _step.dataset.ease;
 			}
 		}
 	}
@@ -144,6 +146,31 @@ class Mawi {
 		}
 	}
 
+	// Add a new step after the given step divider 
+	add_step(step_divider){
+		const new_step_data = Mustache.render(template_step, data_default) + Mustache.render(template_step_divider);
+		const nodes = document.createRange().createContextualFragment(new_step_data);
+		step_divider.after(nodes);
+
+		this.draw_steps(); // Re-draw the steps
+	}
+
+	// Delete the step that is provided
+	delete_step(step){
+		step.nextElementSibling.remove(); // Delete the step divider after this step
+		step.remove();	// Delete the step itself
+
+		this.draw_steps(); // Re-draw the steps
+	}
+
+	// Update the ease value for a step
+	update_step_ease(step,ease_value){
+
+		step.dataset.easeValue = ease_value;
+
+		this.draw_steps(); // Re-draw the steps
+	}
+
 	// Update step durations
 	// Expects:
 	// step_data = {
@@ -163,7 +190,7 @@ class Mawi {
 		if(step_data.after_step != null){
 			step_data.after_step.dataset.duration = Math.max( Math.round(step_data.after_duration - difference) ,50);
 		}
-		mw.draw_steps(); // on the fly, so that we apply things like "small" class to shrinking boxes
+		this.draw_steps(); // on the fly, so that we apply things like "small" class to shrinking boxes
 	}
 
 	// Update zoom
@@ -172,8 +199,8 @@ class Mawi {
 		this._currentSequence.zoom(direction);
 
 		// Now rebuild everything.
-		mw.draw_scale();
-		mw.draw_steps();
+		this.draw_scale();
+		this.draw_steps();
 	}
 
 }

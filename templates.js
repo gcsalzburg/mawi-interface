@@ -1,9 +1,9 @@
 const template_step = `
-	<div class="step" data-start-value="{{start_value}}" data-ease-value="{{ease_value}}"  data-end-value="{{end_value}}"  data-duration="{{duration}}">
+	<div class="step" data-start="{{start}}" data-ease="{{ease}}"  data-end="{{end}}"  data-duration="{{duration}}">
 		<div class="transition">
-			<span contentEditable="true" class="start_value">{{start_value}}</span>
-			<span class="ease_value">{{ease_value}}</span>
-			<span contentEditable="true" class="end_value">{{end_value}}</span>
+			<span contentEditable="true" class="start_value">{{start}}</span>
+			<span class="ease_value">{{ease}}</span>
+			<span contentEditable="true" class="end_value">{{end}}</span>
 		</div>
 		<div class="other-data">
 			<span class="duration_value">{{duration}}</span>
@@ -17,8 +17,8 @@ const template_step = `
 const template_step_divider = `<div class="step_divider"><a href="#add" class="add_step"></a></div>`;
 
 const data_default = {
-	start_value: 0,
-	ease_value: "linear",
-	end_value: 100,
+	start: 0,
+	ease: "linear",
+	end: 100,
 	duration: 500
 };
