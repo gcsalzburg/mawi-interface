@@ -1,58 +1,69 @@
+// Create array of sequences
 const sqs = [
 	new Sequence(test_sequence_data)
 ];
 
+// Create new reference to Mawi class
 const mw = new Mawi();
+
+// Set the current sequence to the first in the list 
 mw.set_sequence(sqs[0]);
 
 // When page loads
 document.addEventListener('DOMContentLoaded', () => {
-
-	// Add scroll on scale listener for zooming
-	document.querySelector(".scale").onwheel = function(event){
-		event.preventDefault();
-		mw.update_zoom(Math.sign(event.deltaY));
-	};
-
 	mw.load_sequence();	// Load the current sequence onto the display
 	mw.draw_scale();		// Draw the scale
 	mw.draw_steps();		// Format steps
 });
 
 
-// General click handling for UI
+// Scrollwheel handling
+document.onwheel = function(event){
+
+	// Scrolling on the scale will zoom in and out
+	if(event.target.classList.contains("scale_dragger")){
+		event.preventDefault();
+		mw.update_zoom(Math.sign(event.deltaY));
+	}
+};
+
+
+// Click button handling
 document.onclick = function(event) {
 
 	event.preventDefault();
-
 	const _e = event.target;
 
 	if(_e.classList.contains("add_step")){
 		// Add Step buttons = insert new divider + new step
-		let nodes = document.createRange().createContextualFragment(Mustache.render(template_step, data_default) + Mustache.render(template_step_divider));
-		_e.parentNode.after(nodes);
+		mw.add_step(_e.parentNode);
 	}else	if(_e.classList.contains("delete_step")){
-		// Remove Step buttons = delete step and node after it (divider)
-		_e.parentNode.nextElementSibling.remove();
-		_e.parentNode.remove();
+		// Remove step button
+		mw.delete_step(_e.parentNode);
 	}else if(_e.classList.contains("ease_value")){
-		// Select a different ease value
+		// Ease name clicking (temporary fix below)
+
 		// TODO: Create a selector for this
-		if(_e.parentNode.parentNode.classList.contains("step_linear")){
-			_e.textContent = "ease-in";
-		}else if(_e.parentNode.parentNode.classList.contains("step_ease")){
-			_e.textContent = "bounce";
-		}else if(_e.parentNode.parentNode.classList.contains("step_bounce")){
-			_e.textContent = "linear";
+		const tmp_e = _e.parentNode.parentNode;
+		let new_ease;
+		if(tmp_e.classList.contains("step_linear")){
+			new_ease = "ease-in";
+		}else if(tmp_e.classList.contains("step_ease")){
+			new_ease = "bounce-out";
+		}else if(tmp_e.classList.contains("step_bounce")){
+			new_ease = "linear";
 		}
+		mw.update_step_ease(_e.parentNode.parentNode, new_ease);
 	}
-	mw.draw_steps();
 };
 
-// Drag handling for sliders
+// Cancel all dragStart events on page
 document.ondragstart = function(event){
+	event.preventDefault();
 	return false;	
 };
+
+// Mousedown triggers, primarily for dragging
 document.onmousedown = function(event){
 
 	const _e = event.target;
