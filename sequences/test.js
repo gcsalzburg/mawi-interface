@@ -1,4 +1,4 @@
-const test_sequence = {
+const test_sequence_data = {
 	name: "Test 1",
 	joints: [
 		{
