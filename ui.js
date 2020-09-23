@@ -1,146 +1,24 @@
+const sqs = [
+	new Sequence(test_sequence_data)
+];
+
+const mw = new Mawi();
+mw.set_sequence(sqs[0]);
+
 // When page loads
 document.addEventListener('DOMContentLoaded', () => {
 
-	// Load the first sequence
-	load_sequence(test_sequence);
+	// Add scroll on scale listener for zooming
+	document.querySelector(".scale").onwheel = function(event){
+		event.preventDefault();
+		mw.update_zoom(Math.sign(event.deltaY));
+	};
 
-	// Add scroll on scale listener
-	document.querySelector(".scale").onwheel = zoomScale;
-
-	draw_scale();		// Draw the scale
-	format_steps();	// Format steps
-
-	console.log(unload_sequence());
+	mw.load_sequence();	// Load the current sequence onto the display
+	mw.draw_scale();		// Draw the scale
+	mw.draw_steps();		// Format steps
 });
 
-
-let scale_factor = 1;
-
-
-function zoomScale(event){
-	event.preventDefault();
-
-	const scaling_speed = 0.15;
-
-	_scale = document.querySelector(".scale");
-	_curr_offset = parseInt(_scale.dataset.new_offset);
-
-	// TODO: Preserve scaling around the centrepoint
-	// save current centre point
-/*	if(_curr_offset < 0){
-		const _half_width = document.querySelector(".scale_container").offsetWidth/2;
-		const _centre = (_half_width - _curr_offset)/scale_factor;
-
-		scale_factor = scale_factor - (event.deltaY/scaling_speed);
-
-		let _new_x = 0; //
-		_scale.style.transform = `translateX(${_new_x})`;
-		_scale.dataset.new_offset = _new_x;
-		_scale.dataset.offset = _new_x;
-		update_step_offsets(_new_x);
-
-	}else{*/
-		scale_factor = scale_factor - Math.sign(event.deltaY)*scaling_speed;
-/*	}*/
-
-	// Now rebuild everything.
-	draw_scale();
-	format_steps();
-}
-
-function format_steps(){
-
-	const joints = document.querySelectorAll('.joint');
-	for(let i=0; i<joints.length; i++){
-		// Reduce visual weight of joints with no steps in them
-		joints[i].classList.remove('joint_empty');
-		if(joints[i].querySelectorAll('.step').length < 1){
-			joints[i].classList.add('joint_empty');
-		}
-
-		const steps = joints[i].querySelectorAll('.step');
-		let last_start = -1;
-		for(let j=0; j<steps.length; j++){
-			let _step = steps[j];
-
-			// Set width of block based on duration
-			const _new_width = (scale_factor * _step.querySelector('.duration_value').textContent);
-			_step.style.width = _new_width + 'px';
-			_step.classList.remove('small');
-			if(_new_width < 200){
-				_step.classList.add("small");
-			}
-
-			// Update start value based on previous start value
-			if(last_start >= 0){
-				_step.querySelector(".start_value").textContent = last_start;
-			}
-			last_start = _step.querySelector(".end_value").textContent;
-
-			// Set colour style based on ease tyle
-			_ease = _step.querySelector('.ease_value').textContent;
-			_step.classList.remove('step_linear');
-			_step.classList.remove('step_ease');
-			_step.classList.remove('step_bounce');
-			if(_ease.indexOf('linear') >= 0){
-				_step.classList.add('step_linear');
-			}else if(_ease.indexOf('ease') >= 0){
-				_step.classList.add('step_ease');
-			}else if(_ease.indexOf('bounce') >= 0){
-				_step.classList.add('step_bounce');
-			}
-		}
-	}
-}
-
-
-function draw_scale(){
-	const scale = document.querySelector('.scale');
-
-	let markers = scale.querySelectorAll(".major, .minor");
-	for(let i=0; i<markers.length; i++){
-		markers[i].remove();
-	}
-
-	// minor = every 20ms
-	// major = every 100ms
-	// scale length = up to 2000ms
-
-	_scale_length = 2000;
-	_major_markers = 100;
-	_minor_markers = 20;
-
-	// Calculate spacings
-	_major_spacing = _major_markers*scale_factor;
-	_minor_spacing = _minor_markers*scale_factor;
-
-	// TODO: create scale spacing iteratively
-	if(_minor_spacing > 25){
-		_minor_markers /= 2;
-		_major_markers /= 2;
-
-		_major_spacing = _major_markers*scale_factor;
-		_minor_spacing = _minor_markers*scale_factor;
-	}else if(_minor_spacing < 12){
-		_minor_markers *= 2;
-		_major_markers *= 2;
-
-		_major_spacing = _major_markers*scale_factor;
-		_minor_spacing = _minor_markers*scale_factor;
-
-	}
-
-	_number_majors = (_scale_length / _major_markers)+1;
-	_number_minors = (_scale_length / _minor_markers)+1;
-
-	for(i=0; i<_number_majors; i++){
-		scale.innerHTML += `<span class="major" data-value="${(_major_markers*i)}" style="left:${(_major_spacing*i)+1}px"></span>`;
-	}
-	
-	for(i=0; i<_number_minors; i++){
-		scale.innerHTML += `<span class="minor" style="left:${(_minor_spacing*i)+1}px"></span>`;
-	}
-}
 
 // General click handling for UI
 document.onclick = function(event) {
@@ -168,7 +46,7 @@ document.onclick = function(event) {
 			_e.textContent = "linear";
 		}
 	}
-	format_steps();
+	mw.draw_steps();
 };
 
 // Drag handling for sliders
@@ -189,23 +67,18 @@ document.onmousedown = function(event){
 		_e.classList.add("is_dragging");
 
 		// Save current sizes and positions
-		const drag_data = {
-			has_before: false,
-			has_after: false
-		};
+		const drag_data = {};
 		drag_data.start_x = event.pageX;
 		if(_e.previousElementSibling != null){
-			drag_data.has_before = true;
 			drag_data.before_step = _e.previousElementSibling;
 			drag_data.before_duration = parseInt(_e.previousElementSibling.querySelector(".duration_value").textContent);
 		}
 		if(_e.nextElementSibling != null){
-			drag_data.has_after = true;
 			drag_data.after_step = _e.nextElementSibling;
 			drag_data.after_duration = parseInt(_e.nextElementSibling.querySelector(".duration_value").textContent);
 		}
 		function onStepDividerDrag(event){
-			setDividerWidths(drag_data,event.pageX);
+			mw.update_step_durations(drag_data,event.pageX);
 		}
 		document.addEventListener('mousemove', onStepDividerDrag);
 
@@ -214,7 +87,7 @@ document.onmousedown = function(event){
 			_e.classList.remove("is_dragging");
 			document.removeEventListener('mousemove', onStepDividerDrag);
 			document.onmouseup = null;
-			format_steps();
+			mw.draw_steps();
 		};
 	}else if(_e.classList.contains("drag_right")){
 		// Drag a handle inside an individual step
@@ -223,18 +96,14 @@ document.onmousedown = function(event){
 		_e.parentNode.parentNode.classList.add("hide_add_buttons");
 
 		// Save current sizes and positions
-		const drag_data = {
-			has_before: false,
-			has_after: false
-		};
+		const drag_data = {};
 		drag_data.start_x = event.pageX;
 		if(_e.classList.contains("drag_right")){
-			drag_data.has_before = true;
 			drag_data.before_step = _e.parentNode;
 			drag_data.before_duration = parseInt(_e.parentNode.querySelector(".duration_value").textContent);
 		}
 		function onStepDividerDrag(event){
-			setDividerWidths(drag_data,event.pageX);
+			mw.update_step_durations(drag_data,event.pageX);
 		}
 		document.addEventListener('mousemove', onStepDividerDrag);
 
@@ -244,7 +113,7 @@ document.onmousedown = function(event){
 			_e.parentNode.parentNode.classList.remove("hide_add_buttons");
 			document.removeEventListener('mousemove', onStepDividerDrag);
 			document.onmouseup = null;
-			format_steps();
+			mw.draw_steps();
 		};
 	}else if(_e.classList.contains("scale_dragger")){
 		// Dragging the scale
@@ -256,12 +125,9 @@ document.onmousedown = function(event){
 		};
 		function onScaleDrag(event){
 			_new_x = _f.dataset.offset - (drag_data.start_x - event.pageX);
-			if(_new_x > 0){
-				_new_x = 0;
-			}
-			_f.style.transform = `translateX(${_new_x}px)`;
+			_new_x = Math.min(0,_new_x);
 			_f.dataset.new_offset = _new_x;
-			update_step_offsets(_new_x);
+			mw.move_scale(_new_x);
 		}
 		document.addEventListener('mousemove', onScaleDrag);
 
@@ -271,7 +137,7 @@ document.onmousedown = function(event){
 			_f.dataset.offset = _f.dataset.new_offset;
 			document.removeEventListener('mousemove', onScaleDrag);
 			document.onmouseup = null;
-			format_steps();
+			mw.draw_steps();
 		};
 	}else if(_e.classList.contains("drag_down")){ // Drag the down handler with the grabber hand
 		_step = _e.parentNode;
@@ -366,7 +232,7 @@ document.onmousedown = function(event){
 				}
 			}
 			_step_dropper.after(_step_divider); // Add a step divider after it.
-			format_steps();
+			mw.draw_steps();
 		}
 	
 		function leaveDroppable(steps_list) {
@@ -382,23 +248,4 @@ document.onmousedown = function(event){
 			_step_floater.remove();
 		  };
 	}
-}
-
-function update_step_offsets(_x){
-	_steps = document.querySelectorAll(".step, .step_divider");
-	for(let i=0; i<_steps.length; i++){
-		_steps[i].style.transform = `translateX(${_x}px`;
-	}
-}
-
-function setDividerWidths(data,new_x){
-	if(data.before_step != null){
-		const new_before_duration = Math.round(data.before_duration + ((new_x-data.start_x)/scale_factor));
-		data.before_step.querySelector(".duration_value").textContent = Math.max(new_before_duration,50);
-	}
-	if(data.after_step != null){
-		const new_after_duration = Math.round(data.after_duration - ((new_x-data.start_x)/scale_factor));
-		data.after_step.querySelector(".duration_value").textContent = Math.max(new_after_duration,50);
-	}
-	format_steps(); // on the fly, so that we apply things like "small" class to shrinking boxes
 }
