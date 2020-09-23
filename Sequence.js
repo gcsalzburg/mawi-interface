@@ -72,7 +72,7 @@ class Sequence {
 	// Returns the current zoom scale
 	zoom(direction){
 		// TODO: Add min/max checks
-		this._zoom_scale = this._zoom_scale - direction*this.zoom_speed;
+		this._zoom_scale = this._zoom_scale - direction*this._zoom_speed;
 
 		return this._zoom_scale;
 	}

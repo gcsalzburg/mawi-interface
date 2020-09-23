@@ -169,8 +169,10 @@ class Mawi {
 	// Update zoom
 	update_zoom(direction){
 
+		this._currentSequence.zoom(direction);
+
 		// Now rebuild everything.
-		draw_scale();
+		mw.draw_scale();
 		mw.draw_steps();
 	}
 
