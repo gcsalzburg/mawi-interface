@@ -1,4 +1,4 @@
-var sequence = {
+const sequence = {
 	name: "Test 1",
 	joints: [
 		{
@@ -75,7 +75,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	build_scale();
 	format_joints();
+
+	generate_sequence();
 });
+
+function generate_sequence(){
+	const _sequence = {
+		name: "",
+		joints: []
+	};
+
+	_sequence.name = "put name here";
+
+	const joints = document.querySelectorAll('.joint');
+	for(i=0; i<joints.length; i++){
+
+		const _joint_name = joints[i].getAttribute("id");
+		const _joint_steps = {
+			joint: _joint_name,
+			steps: []
+		};
+
+		const _steps = joints[i].querySelectorAll(".step");
+		for(j=0; j<_steps.length; j++){
+			_joint_steps.steps.push({
+				start_value: 	_steps[j].querySelector(".start_value").textContent,
+				ease_value:		_steps[j].querySelector(".ease_value").textContent,
+				end_value:		_steps[j].querySelector(".end_value").textContent,
+				duration:		_steps[j].querySelector(".duration_value").textContent
+			});
+		}
+
+		_sequence.joints.push(_joint_steps);
+	}
+	console.log(_sequence);
+
+}
 
 let scale_factor = 1;
 
