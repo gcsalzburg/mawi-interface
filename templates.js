@@ -1,5 +1,5 @@
 const template_step = `
-	<div class="step">
+	<div class="step" data-start-value="{{start_value}}" data-ease-value="{{ease_value}}"  data-end-value="{{end_value}}"  data-duration="{{duration}}">
 		<div class="transition">
 			<span contentEditable="true" class="start_value">{{start_value}}</span>
 			<span class="ease_value">{{ease_value}}</span>
