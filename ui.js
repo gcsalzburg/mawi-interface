@@ -13,7 +13,7 @@ mw.set_sequence(sqs[0]);
 document.addEventListener('DOMContentLoaded', () => {
 	mw.load_sequence();	// Load the current sequence onto the display
 	mw.draw_scale();		// Draw the scale
-	mw.draw_steps();		// Format steps
+	mw.draw_all_steps();		// Format steps
 });
 
 
@@ -68,51 +68,47 @@ document.onmousedown = function(event){
 
 	const _e = event.target;
 
-	if(_e.classList.contains("step_divider")){
-		// Drag a step divider
-
-		if((_e.previousElementSibling == null)||(_e.nextElementSibling == null)){
-			// If this is the first or last step divider, we can't drag it
-			return false;
-		}
-		_e.classList.add("is_dragging");
+	if(_e.classList.contains("step_divider") || _e.classList.contains("drag_right")){
+		// Drag a step divider or end of an individual step
 
 		// Save current sizes and positions
-		const drag_data = {};
-		drag_data.start_x = event.pageX;
-		if(_e.previousElementSibling != null){
-			drag_data.before_step = _e.previousElementSibling;
-			drag_data.before_duration = parseInt(_e.previousElementSibling.querySelector(".duration_value").textContent);
-		}
-		if(_e.nextElementSibling != null){
-			drag_data.after_step = _e.nextElementSibling;
-			drag_data.after_duration = parseInt(_e.nextElementSibling.querySelector(".duration_value").textContent);
-		}
-		function onStepDividerDrag(event){
-			mw.update_step_durations(drag_data,event.pageX);
-		}
-		document.addEventListener('mousemove', onStepDividerDrag);
-
-		// Remove un-needed handlers on release
-		document.onmouseup = function() {
-			_e.classList.remove("is_dragging");
-			document.removeEventListener('mousemove', onStepDividerDrag);
-			document.onmouseup = null;
-			mw.draw_steps();
+		const drag_data = {
+			start_x: event.pageX,
 		};
-	}else if(_e.classList.contains("drag_right")){
-		// Drag a handle inside an individual step
 
-		_e.classList.add("is_dragging");
-		_e.parentNode.parentNode.classList.add("hide_add_buttons");
+		if(_e.classList.contains("step_divider")){
+			// Its the step divider
 
-		// Save current sizes and positions
-		const drag_data = {};
-		drag_data.start_x = event.pageX;
-		if(_e.classList.contains("drag_right")){
+			// If this is the first or last step divider, we can't drag it
+			if((_e.previousElementSibling == null)||(_e.nextElementSibling == null)){
+				return false;
+			}
+
+			//If we have blocks to adjust, then save the data
+			if(_e.previousElementSibling != null){
+				drag_data.before_step = _e.previousElementSibling;
+				drag_data.before_duration = parseInt(_e.previousElementSibling.dataset.duration);
+			}
+			if(_e.nextElementSibling != null){
+				drag_data.after_step = _e.nextElementSibling;
+				drag_data.after_duration = parseInt(_e.nextElementSibling.dataset.duration);
+			}
+
+		}else{
+			// Its the righthand handle of a step
+
+			// Hide the plus button because it gets in the way sometimes
+			_e.parentNode.parentNode.classList.add("hide_add_buttons");
+
+			// Grab the data for this step
 			drag_data.before_step = _e.parentNode;
-			drag_data.before_duration = parseInt(_e.parentNode.querySelector(".duration_value").textContent);
+			drag_data.before_duration = parseInt(_e.parentNode.dataset.duration);
 		}
+
+		// Add class to denote we are dragging it now
+		_e.classList.add("is_dragging");
+
+		// Add temporary event listener for mousemove
 		function onStepDividerDrag(event){
 			mw.update_step_durations(drag_data,event.pageX);
 		}
@@ -124,8 +120,8 @@ document.onmousedown = function(event){
 			_e.parentNode.parentNode.classList.remove("hide_add_buttons");
 			document.removeEventListener('mousemove', onStepDividerDrag);
 			document.onmouseup = null;
-			mw.draw_steps();
 		};
+
 	}else if(_e.classList.contains("scale_dragger")){
 		// Dragging the scale
 		_f = _e.parentNode;
@@ -243,7 +239,7 @@ document.onmousedown = function(event){
 				}
 			}
 			_step_dropper.after(_step_divider); // Add a step divider after it.
-			mw.draw_steps();
+			mw.draw_all_steps();
 		}
 	
 		function leaveDroppable(steps_list) {

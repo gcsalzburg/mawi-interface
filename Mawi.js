@@ -33,8 +33,7 @@ class Mawi {
 	}
 
 	// Format some settings for the steps
-	// TODO: Tidy up this function 
-	draw_steps(){
+	draw_all_steps(steps_array){
 		const joints = document.querySelectorAll('.joint');
 		for(let i=0; i<joints.length; i++){
 
@@ -47,43 +46,49 @@ class Mawi {
 			const steps = joints[i].querySelectorAll('.step');
 			let last_start = -1;
 			for(let j=0; j<steps.length; j++){
-				let _step = steps[j];
-
-				// Set width of block based on duration
-				const _new_width = (this._currentSequence.get_zoom() * _step.dataset.duration);
-				_step.style.width = _new_width + 'px';
-
-				// Add class .small if the width of the block is narrow
-				_step.classList.remove('small');
-				if(_new_width < 200){
-					_step.classList.add("small");
-				}
-
-
-				// Update start value based on previous start value
-				if(last_start >= 0){
-					_step.querySelector(".start_value").textContent = last_start;
-				}
-				last_start = _step.querySelector(".end_value").textContent;
-
-				// Set colour style based on ease style
-				let _ease = _step.dataset.ease;
-				_step.classList.remove('step_linear');
-				_step.classList.remove('step_ease');
-				_step.classList.remove('step_bounce');
-				if(_ease.indexOf('linear') >= 0){
-					_step.classList.add('step_linear');
-				}else if(_ease.indexOf('ease') >= 0){
-					_step.classList.add('step_ease');
-				}else if(_ease.indexOf('bounce') >= 0){
-					_step.classList.add('step_bounce');
-				}
-				
-				// Update text values
-				_step.querySelector('.duration_value').textContent = _step.dataset.duration;
-				_step.querySelector('.ease_value').textContent = _step.dataset.ease;
+				last_start = this.draw_step(steps[j], last_start);
 			}
 		}
+	}
+
+	draw_step(step, last_start = -1){
+
+		// Set width of block based on duration
+		const _new_width = (this._currentSequence.get_zoom() * step.dataset.duration);
+		step.style.width = _new_width + 'px';
+
+		// Add class .small if the width of the block is narrow
+		step.classList.remove('small');
+		if(_new_width < 200){
+			step.classList.add("small");
+		}
+
+		// Update start value based on previous start value
+		if(last_start >= 0){
+			step.dataset.start = last_start;
+		}
+
+		// Set colour style based on ease style
+		const ease = step.dataset.ease;
+		step.classList.remove('step_linear');
+		step.classList.remove('step_ease');
+		step.classList.remove('step_bounce');
+		if(ease.indexOf('linear') >= 0){
+			step.classList.add('step_linear');
+		}else if(ease.indexOf('ease') >= 0){
+			step.classList.add('step_ease');
+		}else if(ease.indexOf('bounce') >= 0){
+			step.classList.add('step_bounce');
+		}
+		
+		// Update text values
+		step.querySelector(".start_value").textContent = step.dataset.start;
+		step.querySelector(".start_value").textContent = step.dataset.end;
+		step.querySelector('.duration_value').textContent = step.dataset.duration;
+		step.querySelector('.ease_value').textContent = step.dataset.ease;
+
+		// Return the end value, to help with the correct setting of the next start value
+		return step.dataset.end;
 	}
 
 	// Draws the steps and scale at their new positions based on the sliding scale
@@ -152,7 +157,7 @@ class Mawi {
 		const nodes = document.createRange().createContextualFragment(new_step_data);
 		step_divider.after(nodes);
 
-		this.draw_steps(); // Re-draw the steps
+		this.draw_all_steps(); // Re-draw the steps
 	}
 
 	// Delete the step that is provided
@@ -160,7 +165,8 @@ class Mawi {
 		step.nextElementSibling.remove(); // Delete the step divider after this step
 		step.remove();	// Delete the step itself
 
-		this.draw_steps(); // Re-draw the steps
+		// TODO: Only redraw the front step in this row
+		this.draw_all_steps(); // Re-draw the steps
 	}
 
 	// Update the ease value for a step
@@ -168,7 +174,7 @@ class Mawi {
 
 		step.dataset.easeValue = ease_value;
 
-		this.draw_steps(); // Re-draw the steps
+		this.draw_step(step); // Re-draw the steps
 	}
 
 	// Update step durations
@@ -186,11 +192,12 @@ class Mawi {
 
 		if(step_data.before_step != null){
 			step_data.before_step.dataset.duration = Math.max( Math.round(step_data.before_duration + difference) ,50);
+			this.draw_step(step_data.before_step);
 		}
 		if(step_data.after_step != null){
 			step_data.after_step.dataset.duration = Math.max( Math.round(step_data.after_duration - difference) ,50);
+			this.draw_step(step_data.after_step);
 		}
-		this.draw_steps(); // on the fly, so that we apply things like "small" class to shrinking boxes
 	}
 
 	// Update zoom
@@ -200,7 +207,7 @@ class Mawi {
 
 		// Now rebuild everything.
 		this.draw_scale();
-		this.draw_steps();
+		this.draw_all_steps();
 	}
 
 }
