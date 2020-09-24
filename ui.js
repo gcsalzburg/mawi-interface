@@ -109,7 +109,7 @@ document.onmousedown = function(event){
 
 		// Add temporary event listener for mousemove
 		function onStepDividerDrag(event){
-			mw.update_step_durations(drag_data, event.pageX, event.ctrlKey);
+			mw.update_step_durations(drag_data, event.pageX, event.shiftKey);
 		}
 		document.addEventListener('mousemove', onStepDividerDrag);
 

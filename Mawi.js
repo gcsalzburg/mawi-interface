@@ -188,22 +188,24 @@ class Mawi {
 	//		after_step: [node],
 	//		after_duration: 0
 	//	}
-	update_step_durations(step_data, new_x, ctrl_key=false){
+	update_step_durations(step_data, new_x, shift_key=false){
 
+		// Calculate difference at given zoom step
 		const difference = ((new_x-step_data.start_x)/this._currentSequence.get_zoom());
 
-		console.log(ctrl_key);
+		// If shift key held then snap to steps
 		let round_step = 0;
-		if(ctrl_key){
+		if(shift_key){
 			round_step = this._drag_step_snap;
 		}
 
+		// Set new step size for before and after steps (if given)
 		if(step_data.before_step != null){
-			step_data.before_step.dataset.duration = this._get_new_step_width(step_data.before_duration,difference,round_step);
+			step_data.before_step.dataset.duration = this._get_new_step_width(step_data.before_duration+difference,round_step);
 			this.draw_step(step_data.before_step);
 		}
 		if(step_data.after_step != null){
-			step_data.after_step.dataset.duration = this._get_new_step_width(step_data.after_duration,difference,round_step);
+			step_data.after_step.dataset.duration = this._get_new_step_width(step_data.after_duration-difference,round_step);
 			this.draw_step(step_data.after_step);
 		}
 	}
@@ -219,13 +221,16 @@ class Mawi {
 	}
 
 	// Calculate a new step width based on the previous width and difference
-	_get_new_step_width(previous_width, difference, round_step = 0, minimum = 50){
+	_get_new_step_width(new_width, round_step = 0, minimum = 50){
 
-		let new_w = Math.round(previous_width+difference);
+		let new_w = Math.round(new_width);
+
+		// Round to snap size if needed
 		if(round_step > 0){
 			new_w = Math.round(new_w/round_step)*round_step;
 		}
 
+		// Don't go below minimum size
 		return Math.max(new_w, minimum);
 	}
 
