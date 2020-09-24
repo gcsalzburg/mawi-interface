@@ -178,7 +178,9 @@ header:before{
 .control_nav a.undo:not(.disabled):hover, .control_nav a.undoundo:not(.disabled):hover{
 	background-image: url('assets/undo_white.svg');
 }
-
+.control_nav a.undoundo.disabled{
+	display: none;
+}
 
 .scale_container{
 	position:relative;
