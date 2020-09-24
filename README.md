@@ -6,8 +6,8 @@
 |---|---|---|
 |Enhancement|Multiple sequence selector|🔴|
 |UX|Limits and intelligent scale adjustments|🔴|
-|UX|Shift+drag for stepped movement|🔴|
-|Enhancement|History push/pop with undo button|🔴|
+|UX|Shift+drag for stepped movement|🟢|
+|Enhancement|History push/pop with undo button|🟢|
 |Core|Ease selector popup|🔴|
 
 

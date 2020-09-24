@@ -11,9 +11,9 @@ mw.set_sequence(sqs[0]);
 
 // When page loads
 document.addEventListener('DOMContentLoaded', () => {
-	mw.load_sequence();	// Load the current sequence onto the display
+	mw.load_sequence();		// Load the current sequence onto the display
 	mw.draw_scale();		// Draw the scale
-	mw.draw_all_steps();		// Format steps
+	mw.draw_all_steps();	// Format steps
 });
 
 
@@ -36,7 +36,7 @@ document.onclick = function(event) {
 	if(_e.classList.contains("add_step")){
 		// Add Step buttons = insert new divider + new step
 		mw.add_step(_e.parentNode);
-	}else	if(_e.classList.contains("delete_step")){
+	}else if(_e.classList.contains("delete_step")){
 		// Remove step button
 		mw.delete_step(_e.parentNode);
 	}else if(_e.classList.contains("ease_value")){
@@ -53,6 +53,10 @@ document.onclick = function(event) {
 			new_ease = "linear";
 		}
 		mw.update_step_ease(_e.parentNode.parentNode, new_ease);
+	}else if(_e.classList.contains("undo")){
+		mw.undo();
+	}else if(_e.classList.contains("undoundo")){
+		mw.undoundo();
 	}
 };
 
@@ -115,6 +119,10 @@ document.onmousedown = function(event){
 
 		// Remove un-needed handlers on release
 		document.onmouseup = function() {
+
+			// Save the new state to the list
+			mw.save_sequence();
+
 			_e.classList.remove("is_dragging");
 			_e.parentNode.parentNode.classList.remove("hide_add_buttons");
 			document.removeEventListener('mousemove', onStepDividerDrag);
@@ -247,11 +255,15 @@ document.onmousedown = function(event){
 		}
 
 		_step_floater.onmouseup = function() {
+			
+			// Save the new state to the list
+			mw.save_sequence();
+
 			document.removeEventListener('mousemove', onMouseMove);
 			document.body.classList.remove("dragging_in_progress");
 			document.querySelector(".removal_marker").classList.remove("removal_marker");
 			_step_floater.onmouseup = null;
 			_step_floater.remove();
-		  };
+		};
 	}
 }

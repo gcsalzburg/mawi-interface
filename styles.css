@@ -131,7 +131,7 @@ header:before{
 .sq_nav a.sq_current{
 	background-color: var(--mawi-dark);
 }
-.sq_nav a.sq_add{
+.sq_nav a.sq_add, .control_nav a.undo, .control_nav a.undoundo{
 	font-weight: bold;
 	background: transparent url('assets/add_mawi_dark.svg');
 	border-color: var(--mawi-dark);
@@ -139,13 +139,18 @@ header:before{
 	background-position: 50% 50%;
 	background-size: 30%;
 	background-repeat: no-repeat;
+	width: 60px;
 }
-.sq_nav a.sq_add:hover{
+.sq_nav a.sq_add:hover, .control_nav a.undo:not(.disabled):hover, .control_nav a.undoundo:not(.disabled):hover{
 	opacity:1;
 	background-image: url('assets/add_white.svg');
 	background-color: var(--mawi-green-70);
 	border-color: var(--mawi-green);
 	color: white;
+}
+
+.control_nav{
+	display: flex;
 }
 .control_nav a{
 	margin: 0 0 7px 7px; 
@@ -158,6 +163,20 @@ header:before{
 }
 .control_nav a.upload_and_run:hover{
 	border-color: var(--mawi-green-120);
+}
+.control_nav a.undo, .control_nav a.undoundo{
+	background-image: url('assets/undo_mawi_dark.svg');
+	background-size: 40%;
+}
+.control_nav a.disabled, .control_nav a.disabled{
+	opacity: 0.2;
+	cursor: not-allowed;
+}
+.control_nav a.undoundo{
+	transform: scale(-1,1);
+}
+.control_nav a.undo:not(.disabled):hover, .control_nav a.undoundo:not(.disabled):hover{
+	background-image: url('assets/undo_white.svg');
 }
 
 

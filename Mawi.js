@@ -12,6 +12,9 @@ class Mawi {
 
 	// Render the blocks to the screen
 	load_sequence(sq = this._currentSequence.load()){
+		if(!sq){
+			return;
+		}
 
 		// Iterate over joints to prepare containers
 		const joints = document.querySelectorAll('.joint');
@@ -32,6 +35,30 @@ class Mawi {
 				_steps_container.innerHTML += Mustache.render(template_step, _steps_array[j]) + Mustache.render(template_step_divider);
 			}
 		}
+	}
+
+	save_sequence(){
+		this._currentSequence.save();
+		this.set_undo_buttons();
+	}
+
+	undo(){
+		this.load_sequence(this._currentSequence.history(-1));
+		this.draw_all_steps();
+		this.set_undo_buttons();
+	}
+	undoundo(){
+		this.load_sequence(this._currentSequence.history(1));
+		this.draw_all_steps();
+		this.set_undo_buttons();
+	}
+
+	set_undo_buttons(){
+		const undo_button = document.querySelector(".undo");
+		const undoundo_button = document.querySelector(".undoundo");
+		const history_state = this._currentSequence.get_history_status();
+		history_state.has_undo ? undo_button.classList.remove("disabled") : undo_button.classList.add("disabled");
+		history_state.has_undoundo ? undoundo_button.classList.remove("disabled") : undoundo_button.classList.add("disabled");
 	}
 
 	// Format some settings for the steps
@@ -159,7 +186,8 @@ class Mawi {
 		const nodes = document.createRange().createContextualFragment(new_step_data);
 		step_divider.after(nodes);
 
-		this.draw_all_steps(); // Re-draw the steps
+		this.draw_all_steps();  // Re-draw the steps
+		this.save_sequence();	// Save the change
 	}
 
 	// Delete the step that is provided
@@ -169,6 +197,7 @@ class Mawi {
 
 		// TODO: Only redraw the front step in this row
 		this.draw_all_steps(); // Re-draw the steps
+		this.save_sequence();	// Save the change
 	}
 
 	// Update the ease value for a step
@@ -176,7 +205,8 @@ class Mawi {
 
 		step.dataset.easeValue = ease_value;
 
-		this.draw_step(step); // Re-draw the steps
+		this.draw_step(step); 	// Re-draw the steps
+		this.save_sequence();	// Save the change
 	}
 
 	// Update step durations
