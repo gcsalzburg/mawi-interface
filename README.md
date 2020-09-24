@@ -2,13 +2,13 @@
 
 ## Features Roadmap
 
-|Feature|Status|
-|---|---|
-|Re-factor into classes|🟢|
-|Multiple sequence selector|🔴|
-|Limits and intelligent scale adjustments|🔴|
-|Shift+drag for stepped movement|🔴|
-|History push/pop with undo button|🔴|
+|Category|Feature|Status|
+|---|---|---|
+|Enhancement|Multiple sequence selector|🔴|
+|UX|Limits and intelligent scale adjustments|🔴|
+|UX|Shift+drag for stepped movement|🔴|
+|Enhancement|History push/pop with undo button|🔴|
+|Core|Ease selector popup|🔴|
 
 
 ## Data structure
