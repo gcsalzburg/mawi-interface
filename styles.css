@@ -379,6 +379,9 @@ header:before{
 	left: initial;
 	right: 5px;
 }
+.step .step_drag.drag_right.is_dragging{
+	background: var(--mawi-green);
+}
 .step .step_drag.drag_down{
 	width: 50px;
     height: 6px;
