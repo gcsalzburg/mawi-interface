@@ -22,7 +22,6 @@ document.onwheel = function(event){
 
 	// Scrolling on the scale will zoom in and out
 	if(event.target.classList.contains("scale_dragger")){
-		event.preventDefault();
 		mw.update_zoom(Math.sign(event.deltaY));
 	}
 };
