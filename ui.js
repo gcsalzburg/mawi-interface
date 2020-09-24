@@ -87,11 +87,11 @@ document.onmousedown = function(event){
 			//If we have blocks to adjust, then save the data
 			if(_e.previousElementSibling != null){
 				drag_data.before_step = _e.previousElementSibling;
-				drag_data.before_duration = parseInt(_e.previousElementSibling.dataset.duration);
+				drag_data.before_duration = parseInt(drag_data.before_step.dataset.duration);
 			}
 			if(_e.nextElementSibling != null){
 				drag_data.after_step = _e.nextElementSibling;
-				drag_data.after_duration = parseInt(_e.nextElementSibling.dataset.duration);
+				drag_data.after_duration = parseInt(drag_data.after_step.dataset.duration);
 			}
 
 		}else{
@@ -110,7 +110,7 @@ document.onmousedown = function(event){
 
 		// Add temporary event listener for mousemove
 		function onStepDividerDrag(event){
-			mw.update_step_durations(drag_data,event.pageX);
+			mw.update_step_durations(drag_data, event.pageX, event.ctrlKey);
 		}
 		document.addEventListener('mousemove', onStepDividerDrag);
 

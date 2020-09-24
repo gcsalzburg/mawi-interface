@@ -2,6 +2,8 @@ class Mawi {
 
 	_currentSequence = null;
 
+	_drag_step_snap = 50;
+
 	constructor(){}
 
 	set_sequence(sequence){
@@ -186,16 +188,22 @@ class Mawi {
 	//		after_step: [node],
 	//		after_duration: 0
 	//	}
-	update_step_durations(step_data, new_x){
+	update_step_durations(step_data, new_x, ctrl_key=false){
 
 		const difference = ((new_x-step_data.start_x)/this._currentSequence.get_zoom());
 
+		console.log(ctrl_key);
+		let round_step = 0;
+		if(ctrl_key){
+			round_step = this._drag_step_snap;
+		}
+
 		if(step_data.before_step != null){
-			step_data.before_step.dataset.duration = Math.max( Math.round(step_data.before_duration + difference) ,50);
+			step_data.before_step.dataset.duration = this._get_new_step_width(step_data.before_duration,difference,round_step);
 			this.draw_step(step_data.before_step);
 		}
 		if(step_data.after_step != null){
-			step_data.after_step.dataset.duration = Math.max( Math.round(step_data.after_duration - difference) ,50);
+			step_data.after_step.dataset.duration = this._get_new_step_width(step_data.after_duration,difference,round_step);
 			this.draw_step(step_data.after_step);
 		}
 	}
@@ -208,6 +216,17 @@ class Mawi {
 		// Now rebuild everything.
 		this.draw_scale();
 		this.draw_all_steps();
+	}
+
+	// Calculate a new step width based on the previous width and difference
+	_get_new_step_width(previous_width, difference, round_step = 0, minimum = 50){
+
+		let new_w = Math.round(previous_width+difference);
+		if(round_step > 0){
+			new_w = Math.round(new_w/round_step)*round_step;
+		}
+
+		return Math.max(new_w, minimum);
 	}
 
 }
