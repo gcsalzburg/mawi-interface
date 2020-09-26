@@ -9,6 +9,9 @@
 |UX|Shift+drag for stepped movement|🟢|
 |Enhancement|History push/pop with undo button|🟢|
 |Core|Ease selector popup|🔴|
+|Bug|Dragging of steps when scrolled down is offset|🔴|
+|Core|Connect to Arduino|🔴|
+|Core|Write data to Arduino|🔴|
 
 
 ## Data structure
