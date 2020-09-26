@@ -11,6 +11,7 @@
 |Core|Start/end value selector|🟢|
 |Core|Ease selector popup|🔴|
 |Bug|Dragging of steps when scrolled down is offset|🔴|
+|Bug|Dragged steps have start values continuously edited when hovering in different rows|🔴|
 |Core|Connect to Arduino|🔴|
 |Core|Write data to Arduino|🔴|
 
