@@ -316,7 +316,7 @@ header:before{
 	display:flex;
 	align-items: flex-end;
 	padding: 0 5px;
-	justify-content: right;
+	justify-content: space-between;
 }
 .step .start_value, .step .end_value{
 	font-size: 1.4em;
@@ -445,9 +445,6 @@ header:before{
 }
 
 
-.step_pause .start_value{
-	display: none;
-}
 .step_pause .ease_value{
 	display: none;
 }
