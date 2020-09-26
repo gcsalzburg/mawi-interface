@@ -4,10 +4,11 @@
 
 |Category|Feature|Status|
 |---|---|---|
-|Enhancement|Multiple sequence selector|🔴|
+|Enhancement|Multiple sequence selector|🟢|
 |UX|Limits and intelligent scale adjustments|🔴|
 |UX|Shift+drag for stepped movement|🟢|
 |Enhancement|History push/pop with undo button|🟢|
+|Core|Start/end value selector|🟢|
 |Core|Ease selector popup|🔴|
 |Bug|Dragging of steps when scrolled down is offset|🔴|
 |Core|Connect to Arduino|🔴|
