@@ -116,46 +116,65 @@ document.onkeyup = function(event){
 
 	if(_e.classList.contains("start_value") || _e.classList.contains("end_value")){
 
-		let changed = false;
-		let new_value;
-
-		if(_e.textContent == ''){
-
-			// Check if empty string
-			new_value = 0;
-			changed = true;
-
-		}else if(_e.textContent.charAt(0) == '0'){
-
-			// Remove leading zeroes
-			new_value = parseInt(_e.textContent,10);
-			changed = true;
-
-		}else{
-
-			// Check if we exceed the limits for the start or end value
-			new_value = parseInt(_e.textContent,10);
-			if(new_value > 180){
-				new_value = 180;
-				changed = true;	 
-			}else if(new_value < 0){
-				new_value = 0;
-				changed = true;
-			}
-		}
-
-		if(changed){
+		let new_value = change_start_end_value(_e.textContent);
+		if(new_value){
 			_e.textContent = new_value;
 			moveCaratToEnd(_e);
 		}
 		
 		// Handle change
 		step = _e.parentNode.parentNode;
-		if(_e.textContent != step.dataset.end){
-			mw.update_step_end(step, _e.textContent);
+		if(_e.classList.contains("start_value")){
+			if(_e.textContent != step.dataset.start){
+				// Its a new start value
+				mw.update_step_start(step, _e.textContent);
+			}
+		}else{
+			if(_e.textContent != step.dataset.end){
+				// Its a new end value
+				mw.update_step_end(step, _e.textContent);
+			}
 		}
 	}
 };
+
+// Handle the start/end value constraining to 0..180, etc...
+function change_start_end_value(value){
+
+	let changed = false;
+	let new_value;
+
+	if(value == ''){
+
+		// Check if empty string
+		new_value = 0;
+		changed = true;
+
+	}else if(value.charAt(0) == '0'){
+
+		// Remove leading zeroes
+		new_value = parseInt(value,10);
+		changed = true;
+
+	}else{
+
+		// Check if we exceed the limits for the start or end value
+		new_value = parseInt(value,10);
+		if(new_value > 180){
+			new_value = 180;
+			changed = true;	 
+		}else if(new_value < 0){
+			new_value = 0;
+			changed = true;
+		}
+	}
+
+	if(changed){
+		return new_value;
+	}else{
+		return false;
+	}
+}
 
 // Cancel all dragStart events on page
 document.ondragstart = function(event){
