@@ -241,6 +241,15 @@ class Mawi {
 		this.save_sequence();	// Save the change
 	}
 
+	// Change the start value 
+	update_step_start(step, start_value){
+		step.dataset.start = parseInt(start_value,10);
+
+		this.draw_step(step); 	// Re-draw the step
+		this.save_sequence();	// Save the change
+	}
+
+	// Change the end value
 	update_step_end(step, end_value){
 		step.dataset.end = parseInt(end_value,10);
 
