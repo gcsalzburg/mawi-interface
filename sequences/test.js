@@ -1,5 +1,5 @@
 const test_sequence_data = {
-	name: "Test 1",
+	name: "Sample",
 	joints: [
 		{
 			joint: "beak",

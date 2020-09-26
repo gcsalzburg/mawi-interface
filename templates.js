@@ -16,9 +16,28 @@ const template_step = `
 
 const template_step_divider = `<div class="step_divider"><a href="#add" class="add_step"></a></div>`;
 
-const data_default = {
+const template_sequence_link = `<a href="#" id="{{id}}" class="sq_select" data-name="{{name}}">{{name}}</a>`;
+
+const data_default_sequence = {
+	name: "New sequence",
+	joints: [
+		{
+			joint: "beak",
+			steps: [
+				{
+					start: 0,
+					ease: "linear",
+					end: 180,
+					duration: 500
+				}
+			]
+		}
+	]
+};
+
+const data_default_step = {
 	start: 0,
 	ease: "linear",
-	end: 100,
+	end: 180,
 	duration: 500
 };

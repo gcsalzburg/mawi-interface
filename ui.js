@@ -1,19 +1,20 @@
-// Create array of sequences
-const sqs = [
-	new Sequence(test_sequence_data)
-];
+// Create array of sequences for reference
+const sequences = [];
 
 // Create new reference to Mawi class
-const mw = new Mawi();
-
-// Set the current sequence to the first in the list 
-mw.set_sequence(sqs[0]);
+let mw;
 
 // When page loads
 document.addEventListener('DOMContentLoaded', () => {
-	mw.load_sequence();		// Load the current sequence onto the display
-	mw.draw_scale();		// Draw the scale
-	mw.draw_all_steps();	// Format steps
+
+	// Create new MAWI reference
+	mw = new Mawi();
+
+	// Load in the test sequence
+	sequences.push(mw.create_sequence(test_sequence_data));
+
+	// Load the first sequence in the list into the display
+	mw.load_sequence(sequences[0]);	
 });
 
 
@@ -33,30 +34,126 @@ document.onclick = function(event) {
 	event.preventDefault();
 	const _e = event.target;
 
-	if(_e.classList.contains("add_step")){
+	if(_e.classList.contains("sq_add")){
+
+		// Add a new sequence
+		const new_sq = mw.create_sequence();
+		sequences.push(new_sq);
+		mw.load_sequence(new_sq);
+
+	}else if(_e.classList.contains("sq_select")){
+
+		// Select the sequence and load it!
+		for(let sq of sequences){
+			if(sq.id == _e.id){
+				mw.load_sequence(sq);
+			}
+		}
+
+	}else if(_e.classList.contains("add_step")){
+
 		// Add Step buttons = insert new divider + new step
 		mw.add_step(_e.parentNode);
+
 	}else if(_e.classList.contains("delete_step")){
+
 		// Remove step button
 		mw.delete_step(_e.parentNode);
+
 	}else if(_e.classList.contains("ease_value")){
+
 		// Ease name clicking (temporary fix below)
 
 		// TODO: Create a selector for this
-		const tmp_e = _e.parentNode.parentNode;
+		const step = _e.parentNode.parentNode;
 		let new_ease;
-		if(tmp_e.classList.contains("step_linear")){
+		if(step.classList.contains("step_linear")){
 			new_ease = "ease-in";
-		}else if(tmp_e.classList.contains("step_ease")){
+		}else if(step.classList.contains("step_ease")){
 			new_ease = "bounce-out";
-		}else if(tmp_e.classList.contains("step_bounce")){
+		}else if(step.classList.contains("step_bounce")){
 			new_ease = "linear";
 		}
-		mw.update_step_ease(_e.parentNode.parentNode, new_ease);
+		mw.update_step_ease(step, new_ease);
+
 	}else if(_e.classList.contains("undo")){
-		mw.undo();
+
+		// Undo sequence step
+		if(!_e.classList.contains("disabled")){
+			mw.undo();
+		}
+
 	}else if(_e.classList.contains("undoundo")){
-		mw.undoundo();
+
+		// Undoundo (a.k.a. redo) sequence step
+		if(!_e.classList.contains("disabled")){
+			mw.undoundo();
+		}
+
+	}
+
+};
+
+// Prevent non-numeric inputs
+const keyArray = ['0','1','2','3','4','5','6','7','8','9','Backspace','Delete','ArrowLeft','ArrowRight'];
+document.onkeydown = function(event){
+
+	const _e = event.target;
+
+	if(_e.classList.contains("start_value") || _e.classList.contains("end_value")){
+
+		// Prevent non-numeric key entry in start and end values
+		if(keyArray.indexOf(event.key) < 0){
+			event.preventDefault();
+		}
+	}
+};
+
+// Check for valid entry into value boxes
+document.onkeyup = function(event){
+
+	const _e = event.target;
+
+	if(_e.classList.contains("start_value") || _e.classList.contains("end_value")){
+
+		let changed = false;
+		let new_value;
+
+		if(_e.textContent == ''){
+
+			// Check if empty string
+			new_value = 0;
+			changed = true;
+
+		}else if(_e.textContent.charAt(0) == '0'){
+
+			// Remove leading zeroes
+			new_value = parseInt(_e.textContent,10);
+			changed = true;
+
+		}else{
+
+			// Check if we exceed the limits for the start or end value
+			new_value = parseInt(_e.textContent,10);
+			if(new_value > 180){
+				new_value = 180;
+				changed = true;	 
+			}else if(new_value < 0){
+				new_value = 0;
+				changed = true;
+			}
+		}
+
+		if(changed){
+			_e.textContent = new_value;
+			moveCaratToEnd(_e);
+		}
+		
+		// Handle change
+		step = _e.parentNode.parentNode;
+		if(_e.textContent != step.dataset.end){
+			mw.update_step_end(step, _e.textContent);
+		}
 	}
 };
 
@@ -151,7 +248,6 @@ document.onmousedown = function(event){
 			_f.dataset.offset = _f.dataset.new_offset;
 			document.removeEventListener('mousemove', onScaleDrag);
 			document.onmouseup = null;
-			mw.draw_steps();
 		};
 	}else if(_e.classList.contains("drag_down")){ // Drag the down handler with the grabber hand
 		_step = _e.parentNode;
@@ -266,4 +362,13 @@ document.onmousedown = function(event){
 			_step_floater.remove();
 		};
 	}
+}
+
+function moveCaratToEnd(node){
+	range = document.createRange();//Create a range (a range is a like the selection but invisible)
+	range.selectNodeContents(node);//Select the entire contents of the element with the range
+	range.collapse(false);//collapse the range to the end point. false means collapse to end rather than the start
+	selection = window.getSelection();//get the selection object (allows you to change selection)
+	selection.removeAllRanges();//remove any selections already made
+	selection.addRange(range);//make the range you have just created the visible selection
 }

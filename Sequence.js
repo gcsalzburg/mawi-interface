@@ -14,9 +14,13 @@ class Sequence {
 	constructor(_json){
 		// Should perhaps check data is valid here
 
+		// Set name
+		this.name = _json.name;
+
 		// Add latest data to history
 		this.joints_history.push(_json);
 
+		return this;
 	}
 
 	get_zoom(){

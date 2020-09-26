@@ -316,6 +316,7 @@ header:before{
 	display:flex;
 	align-items: flex-end;
 	padding: 0 5px;
+	justify-content: right;
 }
 .step .start_value, .step .end_value{
 	font-size: 1.4em;
@@ -444,6 +445,23 @@ header:before{
 }
 
 
+.step_pause .start_value{
+	display: none;
+}
+.step_pause .ease_value{
+	display: none;
+}
+.step_linear{
+	background-color: var(--mawi-blue);
+}
+.step_ease{
+	background-color: var(--mawi-orange);
+}
+.step_bounce{
+	background-color: var(--mawi-pink);
+}
+
+
 .step_divider{
 	width: 0px;
 	position: relative;
@@ -540,18 +558,4 @@ header:before{
 .step_divider .add_step:hover, .joint_empty .step_divider:hover .add_step{
 	background-color: var(--mawi-green);
 	border-color: var(--mawi-green-120);
-}
-
-
-
-
-
-.step_linear{
-	background-color: var(--mawi-blue);
-}
-.step_ease{
-	background-color: var(--mawi-orange);
-}
-.step_bounce{
-	background-color: var(--mawi-pink);
 }
