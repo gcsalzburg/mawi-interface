@@ -14,6 +14,7 @@
 |Bug|Dragged steps have start values continuously edited when hovering in different rows|🔴|
 |Core|Connect to Arduino|🔴|
 |Core|Write data to Arduino|🔴|
+|UX|Allow scrollwheel +/- on numerical inputs|🟢|
 
 
 ## Data structure
