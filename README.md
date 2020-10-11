@@ -4,17 +4,18 @@
 
 |Category|Feature|Status|
 |---|---|---|
-|Enhancement|Multiple sequence selector|🟢|
-|UX|Limits and intelligent scale adjustments|🔴|
-|UX|Shift+drag for stepped movement|🟢|
-|Enhancement|History push/pop with undo button|🟢|
 |Core|Start/end value selector|🟢|
 |Core|Ease selector popup|🔴|
-|Bug|Dragging of steps when scrolled down is offset|🔴|
-|Bug|Dragged steps have start values continuously edited when hovering in different rows|🔴|
 |Core|Connect to Arduino|🔴|
 |Core|Write data to Arduino|🔴|
+|Core|History push/pop with undo button|🟢|
+|Core|Multiple sequence selector|🟢|
+|UX|Limits and intelligent scale adjustments|🔴|
+|UX|Shift+drag for stepped movement|🟢|
 |UX|Allow scrollwheel +/- on numerical inputs|🟢|
+|Bug|Dragging of steps when scrolled down is offset|🔴|
+|Bug|Dragged steps have start values continuously edited when hovering in different rows|🔴|
+|Bug|Only update history for scrollwheel on numerical inputs when cursor leaves the box|🔴|
 
 
 ## Data structure
