@@ -18,6 +18,8 @@ const template_step_divider = `<div class="step_divider"><a href="#add" class="a
 
 const template_sequence_link = `<a href="#" id="{{id}}" class="sq_select" data-name="{{name}}">{{name}}</a>`;
 
+const template_ease_type = `<a href="#" id="{{reference}} class="ease_type"`;
+
 const data_default_sequence = {
 	name: "New sequence",
 	joints: [

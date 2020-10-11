@@ -559,3 +559,7 @@ header:before{
 	background-color: var(--mawi-green);
 	border-color: var(--mawi-green-120);
 }
+
+.ease_selector{
+	position: fixed;
+}

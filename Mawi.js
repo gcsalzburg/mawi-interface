@@ -1,5 +1,58 @@
 class Mawi {
 
+	eases = [
+		{
+			reference: "LINEAR",
+			name: "Linear",
+			variants: ["in","out","in-out"],
+			code: "0"
+		},
+		{
+			reference: "QUADRATIC",
+			name: "x²",
+			variants: ["in","out","in-out"],
+			code: "1"
+		},
+		{
+			reference: "CUBIC",
+			name: "x³",
+			variants: ["in","out","in-out"],
+			code: "2"
+		},
+		{
+			reference: "XTIC",
+			name: "x^n",
+			variants: ["in","out","in-out"],
+			parameter: {
+				type: "integer",
+				range: [1,10]
+			},
+			code: "3"
+		},
+		{
+			reference: "ELASTIC",
+			name: "Elastic",
+			variants: ["in","out","in-out"],
+			parameter: {
+				type: "integer",
+				range: [5,50]
+			},
+			code: "4"
+		},
+		{
+			reference: "EXPONENTIAL",
+			name: "Exponential",
+			variants: ["in","out","in-out"],
+			code: "5"
+		},
+		{
+			reference: "BOUNCE",
+			name: "Bounce",
+			variants: ["in","out","in-out"],
+			code: "6"
+		}
+	];
+
 	_currentSequence = null;
 
 	_drag_step_snap = 50;
