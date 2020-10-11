@@ -21,9 +21,27 @@ document.addEventListener('DOMContentLoaded', () => {
 // Scrollwheel handling
 document.onwheel = function(event){
 
+	const _e = event.target;
+
 	// Scrolling on the scale will zoom in and out
-	if(event.target.classList.contains("scale_dragger")){
+	if(_e.classList.contains("scale_dragger")){
 		mw.update_zoom(Math.sign(event.deltaY));
+	}
+
+	// Scrolling on a number will increment/decrement it
+	if(_e.classList.contains("start_value") || _e.classList.contains("end_value")){
+
+		// Calculate new value
+		let new_value = clamp(parseInt(_e.textContent) - Math.sign(event.deltaY),0,180);
+
+		// Update step
+		step = _e.parentNode.parentNode;
+		if(_e.classList.contains("start_value")){
+				mw.update_step_start(step, new_value);
+		}else{
+				mw.update_step_end(step, new_value);
+		}
+
 	}
 };
 
@@ -116,7 +134,7 @@ document.onkeyup = function(event){
 
 	if(_e.classList.contains("start_value") || _e.classList.contains("end_value")){
 
-		let new_value = change_start_end_value(_e.textContent);
+		let new_value = clean_start_end_value(_e.textContent);
 		if(new_value){
 			_e.textContent = new_value;
 			moveCaratToEnd(_e);
@@ -139,7 +157,10 @@ document.onkeyup = function(event){
 };
 
 // Handle the start/end value constraining to 0..180, etc...
-function change_start_end_value(value){
+function clean_start_end_value(value){
+
+	// In case we pass in a number
+	value = value.toString();
 
 	let changed = false;
 	let new_value;
@@ -391,3 +412,7 @@ function moveCaratToEnd(node){
 	selection.removeAllRanges();//remove any selections already made
 	selection.addRange(range);//make the range you have just created the visible selection
 }
+
+function clamp(input, min, max) {
+	return Math.min(Math.max(input, min), max);
+ };
