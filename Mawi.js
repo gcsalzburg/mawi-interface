@@ -1,26 +1,31 @@
 class Mawi {
 
-	eases = [
+	_eases = [
 		{
 			reference: "LINEAR",
+			class: "linear",
 			name: "Linear",
-			variants: ["in","out","in-out"],
+			variants: [""],
 			code: "0"
 		},
 		{
 			reference: "QUADRATIC",
-			name: "x²",
+			class: "ease",
+			name: "Quadratic",
 			variants: ["in","out","in-out"],
 			code: "1"
 		},
 		{
 			reference: "CUBIC",
-			name: "x³",
+			class: "ease",
+			name: "Cubic",
 			variants: ["in","out","in-out"],
 			code: "2"
 		},
 		{
+			hide: true,
 			reference: "XTIC",
+			class: "ease",
 			name: "x^n",
 			variants: ["in","out","in-out"],
 			parameter: {
@@ -30,7 +35,15 @@ class Mawi {
 			code: "3"
 		},
 		{
+			reference: "EXPONENTIAL",
+			class: "ease",
+			name: "Exponential",
+			variants: ["in","out","in-out"],
+			code: "5"
+		},
+		{
 			reference: "ELASTIC",
+			class: "bounce",
 			name: "Elastic",
 			variants: ["in","out","in-out"],
 			parameter: {
@@ -40,15 +53,10 @@ class Mawi {
 			code: "4"
 		},
 		{
-			reference: "EXPONENTIAL",
-			name: "Exponential",
-			variants: ["in","out","in-out"],
-			code: "5"
-		},
-		{
 			reference: "BOUNCE",
+			class: "bounce",
 			name: "Bounce",
-			variants: ["in","out","in-out"],
+			variants: ["in","out"],
 			code: "6"
 		}
 	];
@@ -116,6 +124,29 @@ class Mawi {
 		
 		this.draw_scale();		// Draw the scale
 		this.draw_all_steps();	// Format steps
+	}
+
+	render_ease_panel(){
+		const eases = this._eases;
+		const ease_panel = document.querySelector('.ease_selector > nav');
+
+		let clear_this;
+		for(let t in eases){
+			if(!eases[t].hide){
+				clear_this = true;
+				for(let v in eases[t].variants){
+					ease_panel.innerHTML += Mustache.render(template_ease_type,
+						{
+							reference: eases[t].reference,
+							class: eases[t].class,
+							clear: clear_this,
+							name: `${eases[t].name} ${eases[t].variants[v]}`.toLowerCase()
+						}
+					);
+					clear_this = false;
+				}
+			}
+		}
 	}
 
 	

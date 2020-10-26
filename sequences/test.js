@@ -12,13 +12,13 @@ const test_sequence_data = {
 				},
 				{
 					start: "60",
-					ease: "ease-in",
+					ease: "cubic in",
 					end: "110",
 					duration: "300"
 				},
 				{
 					start: "110",
-					ease: "bounce-in",
+					ease: "bounce in",
 					end: "110",
 					duration: "300"
 				}
@@ -29,7 +29,7 @@ const test_sequence_data = {
 			steps: [
 				{
 					start: "4",
-					ease: "ease-in",
+					ease: "cubic out",
 					end: "80",
 					duration: "700"
 				}
@@ -40,13 +40,13 @@ const test_sequence_data = {
 			steps: [
 				{
 					start: "120",
-					ease: "bounce-out",
+					ease: "bounce in",
 					end: "60",
 					duration: "250"
 				},
 				{
 					start: "60",
-					ease: "bounce-out",
+					ease: "bounce out",
 					end: "110",
 					duration: "300"
 				}

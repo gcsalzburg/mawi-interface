@@ -10,6 +10,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Create new MAWI reference
 	mw = new Mawi();
 
+	// Render the eases
+	mw.render_ease_panel();
+
 	// Load in the test sequence
 	sequences.push(mw.create_sequence(test_sequence_data));
 
@@ -92,19 +95,29 @@ document.onclick = function(event) {
 
 	}else if(_e.classList.contains("ease_value")){
 
-		// Ease name clicking (temporary fix below)
-
-		// TODO: Create a selector for this
-		const step = _e.parentNode.parentNode;
-		let new_ease;
-		if(step.classList.contains("step_linear")){
-			new_ease = "ease-in";
-		}else if(step.classList.contains("step_ease")){
-			new_ease = "bounce-out";
-		}else if(step.classList.contains("step_bounce")){
-			new_ease = "linear";
+		// Open ease name selector
+		// Highlight current value
+		const ease_panel = document.querySelector('.ease_selector');
+		const old_value = _e.parentNode.parentNode.dataset.ease;
+		for(let this_ease of ease_panel.querySelectorAll('A.ease_type')){
+			if(old_value.trim() == this_ease.dataset.ease.trim()){
+				this_ease.classList.add("selected");
+			}else{
+				this_ease.classList.remove("selected");
+			}
 		}
-		mw.update_step_ease(step, new_ease);
+		ease_panel.classList.add("show");
+
+		ease_panel.onclick = function(event){
+			
+			event.preventDefault();
+			const _e = event.target;
+
+			this.classList.remove("show");
+			this.onclick = null;
+		}
+
+	//	mw.update_step_ease(step, new_ease);
 
 	}else if(_e.classList.contains("undo")){
 
