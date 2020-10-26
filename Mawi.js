@@ -295,19 +295,23 @@ class Mawi {
 	}
 
 	// Change the start value 
-	update_step_start(step, start_value){
+	update_step_start(step, start_value, save = true){
 		step.dataset.start = parseInt(start_value,10);
 
 		this.draw_step(step); 	// Re-draw the step
-		this.save_sequence();	// Save the change
+		if(save){
+			this.save_sequence();	// Save the change
+		}
 	}
 
 	// Change the end value
-	update_step_end(step, end_value){
+	update_step_end(step, end_value, save = true){
 		step.dataset.end = parseInt(end_value,10);
 
 		this.draw_all_steps(); 	// Re-draw the steps. We do the "all_steps" so that we catch the start value change for the next step
-		this.save_sequence();	// Save the change
+		if(save){
+			this.save_sequence();	// Save the change
+		}
 	}
 
 	// Update the ease value for a step

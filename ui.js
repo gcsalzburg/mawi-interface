@@ -25,11 +25,13 @@ document.onwheel = function(event){
 
 	// Scrolling on the scale will zoom in and out
 	if(_e.classList.contains("scale_dragger")){
+		event.preventDefault();
 		mw.update_zoom(Math.sign(event.deltaY));
 	}
 
 	// Scrolling on a number will increment/decrement it
 	if(_e.classList.contains("start_value") || _e.classList.contains("end_value")){
+		event.preventDefault();
 
 		// Calculate new value
 		let new_value = clamp(parseInt(_e.textContent) - Math.sign(event.deltaY),0,180);
@@ -37,13 +39,23 @@ document.onwheel = function(event){
 		// Update step
 		step = _e.parentNode.parentNode;
 		if(_e.classList.contains("start_value")){
-				mw.update_step_start(step, new_value);
+				mw.update_step_start(step, new_value, false);
 		}else{
-				mw.update_step_end(step, new_value);
+				mw.update_step_end(step, new_value, false);
 		}
 
 	}
 };
+// Leave handling for scrollables, to save a new state
+// Use mouseout not mouseleave as mouseleave does not bubble!
+document.onmouseout = function(event){
+	const _e = event.target;
+
+	// Save the state!
+	if(_e.classList.contains("start_value") || _e.classList.contains("end_value")){
+		mw.save_sequence();
+	}
+}
 
 
 // Click button handling

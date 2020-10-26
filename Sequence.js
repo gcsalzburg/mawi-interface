@@ -67,10 +67,9 @@ class Sequence {
 	}
 
 	// Save the current state of the sequence to the history
-	// Also returns the saved data json  
 	save(joints_container = document.querySelector(".joints")){
 		 // Create sequence structure
-		const return_data = {
+		const new_save_state = {
 			name: this.name,
 			joints: []
 		};
@@ -97,19 +96,23 @@ class Sequence {
 
 			// Only save steps data where some steps exist
 			if(_steps.length > 0){
-				return_data.joints.push(_joint_steps);
+				new_save_state.joints.push(_joint_steps);
 			}
 		}
 
-		// Save and return
-		if(this._history_index < (this.joints_history.length-1)){
-			// We are at an undo step, so delete everything in front of this.
-			this.joints_history.splice(this._history_index+1,this.joints_history.length-this._history_index);
-		}
+		// Check its not a duplicate
+		if(!_.isEqual(this.joints_history[this._history_index], new_save_state) && (this.joints_history.length > 0)){
 
-		// Push new history state and return
-		this.joints_history.push(return_data);
-		this._history_index++;
+			// Check if we are already "undoing"
+			if(this._history_index < (this.joints_history.length-1)){
+				// We are at an undo step, so delete everything in front of this.
+				this.joints_history.splice(this._history_index+1,this.joints_history.length-this._history_index);
+			}
+
+			// Push new history state and return
+			this.joints_history.push(new_save_state);
+			this._history_index++;
+		}
 	}
 
 	// Zoom in or zoom out
