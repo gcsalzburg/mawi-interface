@@ -15,7 +15,7 @@
 |UX|Allow scrollwheel +/- on numerical inputs|🟢|
 |Bug|Dragging of steps when scrolled down is offset|🔴|
 |Bug|Dragged steps have start values continuously edited when hovering in different rows|🔴|
-|Bug|Only update history for scrollwheel on numerical inputs when cursor leaves the box|🔴|
+|Bug|Only update history for scrollwheel on numerical inputs when cursor leaves the box|🟢|
 
 
 ## Data structure
